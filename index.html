@@ -264,11 +264,50 @@
       box-shadow: 0 0 18px rgba(2, 132, 199, 0.6);
     }
 
-    /* MAIN APP WORKSPACE: SPLIT MAP & FEED */
+    /* LIVE WIRE TICKER */
+    .live-wire-bar {
+      background: rgba(6, 182, 212, 0.08);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.25);
+      padding: 5px 16px;
+      font-size: 11.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #cbd5e1;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .wire-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-cyan);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .wire-headline {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      font-weight: 600;
+      transition: opacity 0.3s;
+    }
+    .wire-source {
+      font-size: 10px;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* MAIN APP WORKSPACE */
     .main-workspace {
       display: flex;
       flex: 1;
-      height: calc(100vh - 56px);
+      height: calc(100vh - 86px);
       position: relative;
       overflow: hidden;
     }
@@ -315,15 +354,17 @@
       font-size: 11px;
     }
 
+    /* QUICK TOGGLES DOCK */
     .map-quick-toggles {
       position: absolute;
       bottom: 24px;
       left: 14px;
       z-index: 500;
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
-      background: rgba(10, 15, 26, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(10, 15, 26, 0.88);
+      backdrop-filter: blur(10px);
       border: 1px solid var(--bg-surface-border);
       padding: 6px;
       border-radius: 10px;
@@ -351,6 +392,84 @@
       border-color: var(--accent-cyan);
       color: var(--accent-cyan);
       font-weight: 700;
+    }
+
+    /* TIMELINE SCRUBBER DOCK */
+    .timeline-dock {
+      position: absolute;
+      bottom: 74px;
+      left: 14px;
+      right: 14px;
+      max-width: 620px;
+      background: rgba(10, 15, 26, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 12px;
+      padding: 10px 14px;
+      z-index: 600;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 15px var(--accent-cyan-glow);
+    }
+    .timeline-dock.open { display: flex; }
+
+    .timeline-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .timeline-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .timeline-cur-time {
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .timeline-ctrl-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .timeline-play-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border: 1px solid #38bdf8;
+      color: #fff;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .timeline-slider {
+      flex: 1;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+    .timeline-speed-chip {
+      background: var(--bg-surface);
+      border: 1px solid var(--bg-surface-border);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      cursor: pointer;
+    }
+    .timeline-speed-chip.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
     }
 
     /* SIDEBAR FEED */
@@ -399,6 +518,15 @@
       font-size: 11px;
       font-family: monospace;
       font-weight: 700;
+    }
+
+    .feed-sync-countdown {
+      font-size: 10px;
+      color: var(--accent-green);
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     /* SEARCH INPUT */
@@ -527,7 +655,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 12px;
-      padding-bottom: 90px; /* generous bottom clearance for floating mobile dock */
+      padding-bottom: 90px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -634,10 +762,6 @@
       color: var(--text-muted);
       line-height: 1.7;
       margin-bottom: 8px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
       padding-bottom: 2px;
     }
 
@@ -648,19 +772,27 @@
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding-top: 6px;
       margin-top: 4px;
+      gap: 6px;
     }
 
     .weapon-badge {
-      font-size: 10px;
+      font-size: 10.5px;
       background: rgba(255, 255, 255, 0.05);
       color: #cbd5e1;
       padding: 2px 6px;
       border-radius: 4px;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      font-family: monospace;
+      font-family: var(--font-fa);
+      letter-spacing: 0;
     }
 
-    .focus-map-action {
+    .card-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .focus-map-action, .card-export-btn {
       font-size: 11px;
       color: var(--accent-cyan);
       font-weight: 700;
@@ -670,9 +802,19 @@
       background: none;
       border: none;
       cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .card-export-btn {
+      color: var(--accent-yellow);
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.25);
+    }
+    .card-export-btn:hover {
+      background: rgba(234, 179, 8, 0.2);
     }
 
-    /* LEAFLET CUSTOM POPUP & MARKER STYLES */
+    /* LEAFLET CUSTOM POPUP */
     .leaflet-popup-content-wrapper {
       background: rgba(13, 19, 31, 0.95) !important;
       backdrop-filter: blur(12px) !important;
@@ -687,7 +829,7 @@
     .leaflet-popup-content {
       margin: 0 !important;
       padding: 14px !important;
-      width: 290px !important;
+      width: 300px !important;
       line-height: 1.5 !important;
     }
     .leaflet-popup-tip {
@@ -722,7 +864,7 @@
     .popup-body {
       font-size: 11.5px;
       color: #cbd5e1;
-      line-height: 1.55;
+      line-height: 1.6;
       margin-bottom: 10px;
     }
     .popup-source-box {
@@ -734,6 +876,22 @@
       border: 1px solid var(--bg-surface-border);
       display: flex;
       justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .popup-export-action {
+      width: 100%;
+      background: rgba(234, 179, 8, 0.12);
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     /* CUSTOM SVG TACTICAL MARKERS */
@@ -746,9 +904,7 @@
       position: relative;
       transition: transform 0.2s;
     }
-    .tactical-marker:hover {
-      transform: scale(1.25);
-    }
+    .tactical-marker:hover { transform: scale(1.25); }
 
     .marker-pulse-ring {
       position: absolute;
@@ -776,14 +932,39 @@
       border: 2px solid #fff;
     }
 
-    /* MODAL FOR ADDING NEW EVENT */
+    /* AIRCRAFT MARKER */
+    .aircraft-marker-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+    .aircraft-icon-svg {
+      width: 28px;
+      height: 28px;
+      filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.8));
+      transition: transform 0.4s ease-out;
+    }
+    .aircraft-callsign-tag {
+      background: rgba(10, 15, 26, 0.85);
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      font-size: 9px;
+      font-family: monospace;
+      padding: 1px 4px;
+      border-radius: 3px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    /* MODAL STYLES */
     .osint-modal-backdrop {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(6px);
       z-index: 2000;
       display: none;
@@ -799,7 +980,7 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--accent-cyan-glow);
       border-radius: 14px;
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
       overflow: hidden;
       animation: modalSlide 0.25s ease-out;
     }
@@ -840,16 +1021,8 @@
       gap: 12px;
     }
 
-    .form-row {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .form-label {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
+    .form-row { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 11.5px; font-weight: 700; color: var(--text-muted); }
     .form-input, .form-select, .form-textarea {
       background: var(--bg-dark);
       border: 1px solid var(--bg-surface-border);
@@ -864,11 +1037,7 @@
       border-color: var(--accent-cyan);
       box-shadow: 0 0 10px var(--accent-cyan-glow);
     }
-    .form-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .modal-foot {
       padding: 12px 18px;
@@ -879,17 +1048,29 @@
       gap: 10px;
     }
 
+    /* EXPORT GRAPHIC CARD MODAL */
+    .export-modal-card {
+      max-width: 680px;
+    }
+    .export-canvas-preview {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--bg-surface-border);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
     /* MOBILE FLOATING SWITCHER */
     .mobile-view-tabs {
       display: none;
       position: fixed;
-      bottom: 16px;
+      bottom: 14px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(13, 19, 31, 0.95);
       backdrop-filter: blur(10px);
       border: 1px solid var(--accent-cyan);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(6, 182, 212, 0.3);
       border-radius: 30px;
       padding: 4px;
       z-index: 1500;
@@ -917,72 +1098,30 @@
       .hud-clocks, .defcon-pill { display: none; }
       .brand-sub-badge { display: none; }
       
-      header.command-header {
-        padding: 8px 12px;
-      }
-      .brand-main-title {
-        font-size: 13.5px;
-      }
-      .live-status-badge {
-        font-size: 10px;
-        padding: 2px 6px;
-      }
+      header.command-header { padding: 8px 12px; }
+      .brand-main-title { font-size: 13.5px; }
+      .live-status-badge { font-size: 10px; padding: 2px 6px; }
       .hud-btn span.btn-label { display: none; }
-      .hud-btn {
-        padding: 6px 8px;
-      }
-      .hud-btn-primary {
-        padding: 6px 12px;
-      }
+      .hud-btn { padding: 6px 8px; }
+      .hud-btn-primary { padding: 6px 12px; }
       .hud-btn-primary span.btn-label { display: inline !important; }
 
-      .main-workspace {
-        flex-direction: column;
-        height: calc(100vh - 52px);
-      }
+      .main-workspace { flex-direction: column; height: calc(100vh - 86px); }
       
-      aside.osint-sidebar {
-        width: 100%;
-        height: 100%;
-        display: none;
-      }
-      aside.osint-sidebar.mobile-visible {
-        display: flex;
-      }
+      aside.osint-sidebar { width: 100%; height: 100%; display: none; }
+      aside.osint-sidebar.mobile-visible { display: flex; }
 
-      #mapContainer.mobile-hidden {
-        display: none;
-      }
+      #mapContainer.mobile-hidden { display: none; }
 
-      /* Compact sidebar header on mobile */
-      .sidebar-header-box {
-        padding: 8px 12px;
-        gap: 8px;
-      }
-      .sidebar-heading {
-        font-size: 12.5px;
-      }
-      .search-input {
-        padding: 6px 32px 6px 10px;
-        font-size: 11.5px;
-      }
+      .sidebar-header-box { padding: 8px 12px; gap: 8px; }
+      .sidebar-heading { font-size: 12.5px; }
+      .search-input { padding: 6px 32px 6px 10px; font-size: 11.5px; }
 
-      /* Compact stats ribbon on mobile */
-      .stats-ribbon {
-        padding: 4px 10px;
-        gap: 4px;
-      }
-      .stat-card {
-        padding: 4px 6px;
-      }
-      .stat-card-val {
-        font-size: 12px;
-      }
-      .stat-card-label {
-        font-size: 8.5px;
-      }
+      .stats-ribbon { padding: 4px 10px; gap: 4px; }
+      .stat-card { padding: 4px 6px; }
+      .stat-card-val { font-size: 12px; }
+      .stat-card-label { font-size: 8.5px; }
 
-      /* Quick toggles on map */
       .map-quick-toggles {
         bottom: 68px;
         left: 8px;
@@ -991,21 +1130,18 @@
         padding: 4px;
         gap: 4px;
       }
-      .toggle-chip {
-        font-size: 10.5px;
-        padding: 5px 8px;
+      .toggle-chip { font-size: 10.5px; padding: 5px 8px; }
+
+      .events-feed-list { padding-bottom: 120px !important; }
+      .sidebar-panel { padding-bottom: 40px; }
+
+      .timeline-dock {
+        bottom: 110px;
+        left: 8px;
+        right: 8px;
       }
 
-      /* Floating switcher with backdrop glow */
-      .events-feed-list {
-        padding-bottom: 140px !important;
-      }
-
-      .mobile-view-tabs {
-        display: flex;
-        bottom: 14px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(6, 182, 212, 0.3);
-      }
+      .mobile-view-tabs { display: flex; bottom: 14px; }
     }
   </style>
 </head>
@@ -1060,6 +1196,9 @@
       <button class="hud-btn" id="sfxToggleBtn" title="تنظیم صدا">
         <span id="sfxIcon">🔊</span>
       </button>
+      <button class="hud-btn" id="toggleTimelineBtn" title="ماشین زمان رویدادها">
+        <span>⏳</span><span class="btn-label"> ماشین زمان</span>
+      </button>
       <button class="hud-btn" id="resetViewBtn" title="بازنشانی زاویه نقشه">
         <span>🌐</span><span class="btn-label"> بازنشانی نما</span>
       </button>
@@ -1068,6 +1207,15 @@
       </button>
     </div>
   </header>
+
+  <!-- LIVE WIRE TICKER -->
+  <div class="live-wire-bar">
+    <div class="wire-label">
+      <span>📡 خبر فوری:</span>
+    </div>
+    <div class="wire-headline" id="liveWireHeadline">در حال دریافت فیدهای ماهواره‌ای زنده...</div>
+    <div class="wire-source" id="liveWireSource">Al Jazeera Wire</div>
+  </div>
 
   <!-- 2. MAIN APP WORKSPACE -->
   <main class="main-workspace">
@@ -1080,9 +1228,12 @@
             <span>📡 فید رویدادهای میدانی و امنیتی</span>
             <span class="feed-count-badge" id="eventsCountBadge">۰</span>
           </div>
-          <button class="hud-btn" id="refreshFeedBtn" style="padding: 4px 8px; font-size: 11px;">
-            <span>🔄 بروزرسانی</span>
-          </button>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="feed-sync-countdown" id="syncCountdown">⏳ ۶۰s</span>
+            <button class="hud-btn" id="refreshFeedBtn" style="padding: 4px 8px; font-size: 11px;">
+              <span>🔄 فچ زنده</span>
+            </button>
+          </div>
         </div>
 
         <!-- SEARCH INPUT -->
@@ -1118,19 +1269,19 @@
       <!-- STATS RIBBON -->
       <div class="stats-ribbon">
         <div class="stat-card">
-          <div class="stat-card-val" style="color:var(--accent-red);" id="statCritCount">۸</div>
+          <div class="stat-card-val" style="color:var(--accent-red);" id="statCritCount">۳</div>
           <div class="stat-card-label">بحرانی/فوری</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-val" style="color:var(--accent-cyan);" id="statInterceptCount">۱۲</div>
+          <div class="stat-card-val" style="color:var(--accent-cyan);" id="statInterceptCount">۲</div>
           <div class="stat-card-label">رهگیری پدافند</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-val" style="color:var(--accent-yellow);" id="statSortieCount">۹</div>
+          <div class="stat-card-val" style="color:var(--accent-yellow);" id="statSortieCount">۳</div>
           <div class="stat-card-label">سورتی هوایی</div>
         </div>
         <div class="stat-card">
-          <div class="stat-card-val" style="color:var(--accent-green);" id="statTotal24h">۲۹</div>
+          <div class="stat-card-val" style="color:var(--accent-green);" id="statTotal24h">۹</div>
           <div class="stat-card-label">رویداد ۲۴h</div>
         </div>
       </div>
@@ -1151,6 +1302,25 @@
         </div>
       </div>
 
+      <!-- TIMELINE SCRUBBER DOCK -->
+      <div class="timeline-dock" id="timelineDock">
+        <div class="timeline-top-row">
+          <div class="timeline-title">
+            <span>⏳ شبیه‌ساز و تایم‌لاین رویدادها</span>
+          </div>
+          <div class="timeline-cur-time" id="timelineTimeLabel">زنده (هم‌اکنون)</div>
+        </div>
+        <div class="timeline-ctrl-row">
+          <button class="timeline-play-btn" id="timelinePlayBtn">
+            <span id="playIcon">▶️</span> <span id="playText">پخش</span>
+          </button>
+          <input type="range" class="timeline-slider" id="timelineSlider" min="-24" max="0" step="0.2" value="0">
+          <button class="timeline-speed-chip active" id="spd1x" data-spd="1">1x</button>
+          <button class="timeline-speed-chip" id="spd2x" data-spd="2">2x</button>
+          <button class="timeline-speed-chip" id="spd4x" data-spd="4">4x</button>
+        </div>
+      </div>
+
       <!-- QUICK MAP TOGGLE BUTTONS -->
       <div class="map-quick-toggles">
         <button class="toggle-chip active" id="toggleDefenseBubblesBtn">
@@ -1158,6 +1328,12 @@
         </button>
         <button class="toggle-chip active" id="toggleTrajectoriesBtn">
           <span>🚀 بردارهای تهاجم</span>
+        </button>
+        <button class="toggle-chip active" id="toggleMilitaryAirBtn">
+          <span>✈️ پروازهای شناسایی (ADS-B)</span>
+        </button>
+        <button class="toggle-chip" id="toggleHeatmapBtn">
+          <span>🌡️ نقشه حرارتی</span>
         </button>
         <button class="toggle-chip" id="toggleSatLayerBtn">
           <span>🛰️ تصویر ماهواره‌ای</span>
@@ -1264,8 +1440,31 @@
     </div>
   </div>
 
-  <!-- Local Leaflet Script -->
+  <!-- EXPORT GRAPHIC CARD MODAL -->
+  <div class="osint-modal-backdrop" id="exportCardModal">
+    <div class="osint-modal-card export-modal-card">
+      <div class="modal-head">
+        <div class="modal-head-title">
+          <span>📸 کارت گرافیکی رویداد (مخصوص توییتر و تلگرام)</span>
+        </div>
+        <button class="modal-close-btn" id="closeExportModalBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <canvas id="exportCanvas" width="1200" height="675" class="export-canvas-preview"></canvas>
+      </div>
+      <div class="modal-foot" style="justify-content:space-between;">
+        <button class="hud-btn" id="copyCaptionBtn">📋 کپی متن خبر برای تلگرام/توییتر</button>
+        <div style="display:flex; gap:8px;">
+          <button class="hud-btn" id="cancelExportModalBtn">بستن</button>
+          <button class="hud-btn hud-btn-primary" id="downloadCardImgBtn">📥 دانلود تصویر PNG (کیفیت HD)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local Leaflet Script & Heatmap Plugin -->
   <script src="/osint/leaflet/leaflet.js"></script>
+  <script src="/osint/leaflet/leaflet-heat.js"></script>
 
   <!-- APP LOGIC SCRIPT -->
   <script>
@@ -1317,145 +1516,6 @@
       }
     };
 
-    // --- INITIAL OSINT EVENTS DATASET ---
-    const DEFAULT_EVENTS = [
-      {
-        id: "evt-01",
-        title: "آماده‌باش حداکثری سامانه‌های باور-۳۷۳ و سامانه سوم خرداد در مرکز کشور",
-        category: "airdefense",
-        severity: "ops",
-        region: "iran",
-        location: "اصفهان، پایگاه هشتم شکاری و تاسیسات هسته‌ای",
-        lat: 32.7500,
-        lng: 51.8600,
-        time: "۱۸ دقیقه پیش",
-        summary: "افزایش سطح هوشیاری یگان‌های پدافندی ارتش و سپاه در شعاع ۲۰۰ کیلومتری اصفهان و رصد مستمر کریدورهای غرب کشور با رادارهای کشف افق.",
-        weapon: "باور-۳۷۳ / سوم خرداد",
-        source: "دیده‌بان‌های راداری و منابع محلی",
-        isHot: true
-      },
-      {
-        id: "evt-02",
-        title: "فعال‌سازی آژیرهای هشدار در منطقه دان و پایگاه اطلاعاتی گالیلوت",
-        category: "alert",
-        severity: "crit",
-        region: "israel",
-        location: "تل‌آویو، مقر گالیلوت و تل‌آویو بزرگ",
-        lat: 32.1450,
-        lng: 34.8050,
-        time: "۲۸ دقیقه پیش",
-        summary: "به صدا درآمدن آژیر خطر در شمال تل‌آویو پس از رصد ورود پرتابه‌های ناشناس از سمت شمال؛ سامانه‌های فلاخن داوود و پیکان فعال شدند.",
-        weapon: "پیکان ۳ / فلاخن داوود",
-        source: "سامانه رسمی پیک جبهه داخلی",
-        isHot: true
-      },
-      {
-        id: "evt-03",
-        title: "پرواز گشت‌های شناسایی پهپادهای هرمس ۹۰۰ بر فراز آسمان بیروت",
-        category: "aviation",
-        severity: "warn",
-        region: "lebanon",
-        location: "بیروت، حریم هوایی ضاحیه جنوبی",
-        lat: 33.8500,
-        lng: 35.5000,
-        time: "۴۲ دقیقه پیش",
-        summary: "پرواز مداوم پرنده‌های بدون سرنشین شناسایی ارتش اسرائیل در ارتفاع متوسط و تصویربرداری الکترواپتیکال از مناطق جنوبی پایتخت لبنان.",
-        weapon: "Hermes 900 UAV",
-        source: "گزارش‌های ناوبری هوایی بیروت",
-        isHot: false
-      },
-      {
-        id: "evt-04",
-        title: "گزارش حادثه امنیتی دریایی UKMTO در ۶۵ مایلی بندر الحدیده",
-        category: "naval",
-        severity: "crit",
-        region: "yemen",
-        location: "دریای سرخ، جنوب غرب بندر الحدیده",
-        lat: 14.7900,
-        lng: 42.9500,
-        time: "۱ ساعت پیش",
-        summary: "سازمان عملیات تجارت دریایی بریتانیا از حمله دو فروند شناور تندرو انتحاری و شلیک پرتابه ضدکشتی به یک تانکر عبوری در تنگه باب‌المندب خبر داد.",
-        weapon: "موشک ضدکشتی صیاد / قایق بدون سرنشین",
-        source: "UKMTO Maritime Advisory",
-        isHot: true
-      },
-      {
-        id: "evt-05",
-        title: "رهگیری پهپاد انتحاری بر فراز بندر و خلیج حیفا توسط گنبد آهنین",
-        category: "missile",
-        severity: "crit",
-        region: "israel",
-        location: "حیفا، بندرگاه و حریم دریایی",
-        lat: 32.8190,
-        lng: 34.9980,
-        time: "۱ ساعت و ۱۵ دقیقه پیش",
-        summary: "شلیک دو تیر موشک تمیر از سامانه گنبد آهنین به سمت یک ریزپرنده انتحاری نفوذی که از خاک لبنان به سمت لنگرگاه و پالایشگاه حیفا پرواز کرده بود.",
-        weapon: "گنبد آهنین (Tamir)",
-        source: "رسانه‌های محلی و تصاویر شاهدان",
-        isHot: false
-      },
-      {
-        id: "evt-06",
-        title: "رصد پروازهای فشرده سوخت‌رسان KC-135 و جنگنده‌های ائتلاف در التنف",
-        category: "aviation",
-        severity: "ops",
-        region: "syria_iraq",
-        location: "مرز سوریه-اردن-عراق، پایگاه التنف",
-        lat: 33.4300,
-        lng: 38.8300,
-        time: "۲ ساعت پیش",
-        summary: "فعالیت سنگین راداری و پشتیبانی هوایی سوخت‌رسان‌های آمریکایی در کریدور بیابانی بادیه الشام و مرز غربی استان الانبار عراق.",
-        weapon: "Boeing KC-135 Stratotanker",
-        source: "داده‌های فلایت رادار ADS-B Exchange",
-        isHot: false
-      },
-      {
-        id: "evt-07",
-        title: "رزمایش پدافند ساحلی و موشک‌های کروز قدیر در تنگه هرمز",
-        category: "naval",
-        severity: "ops",
-        region: "iran",
-        location: "بندرعباس، جزیره قشم و تنگه هرمز",
-        lat: 27.1500,
-        lng: 56.2800,
-        time: "۲ ساعت و ۴۰ دقیقه پیش",
-        summary: "استقرار پرتابگرهای متحرک موشک‌های کروز ساحل به دریای قدیر و پایش الکترونیکی خروج ناوگروه رزمی خارجی توسط پهپادهای ابابیل ۵.",
-        weapon: "کروز دریایی قدیر / پهپاد ابابیل",
-        source: "قرارگاه نیروی دریایی",
-        isHot: false
-      },
-      {
-        id: "evt-08",
-        title: "استقرار اسکادران جدید جنگنده‌های F-35I آدور در پایگاه نواتیم",
-        category: "aviation",
-        severity: "diplo",
-        region: "israel",
-        location: "صحرای نقب، پایگاه هوایی نواتیم",
-        lat: 31.2080,
-        lng: 35.0120,
-        time: "۳ ساعت پیش",
-        summary: "تصاویر ماهواره‌ای نشان‌دهنده افزایش حضور و آماده‌باش جنگنده‌های نسل پنجم F-35 در آشیانه‌های مستحکم پایگاه نواتیم در جنوب اراضی اشغالی است.",
-        weapon: "F-35I Adir Stealth Fighter",
-        source: "تصاویر ماهواره‌ای Planet Labs",
-        isHot: false
-      },
-      {
-        id: "evt-09",
-        title: "فعالیت پدافند موشکی پانتسیر در جنوب غربی دمشق",
-        category: "airdefense",
-        severity: "warn",
-        region: "syria_iraq",
-        location: "دمشق، منطقه الکسوه و جبل المانع",
-        lat: 33.3600,
-        lng: 36.2400,
-        time: "۳ ساعت و ۳۰ دقیقه پیش",
-        summary: "مقابله پدافند ارتش سوریه با اهداف متخاصم هوایی در آسمان ریف جنوبی دمشق و شنیده شدن صدای چند انفجار پیاپی.",
-        weapon: "سامانه پانتسیر-اس۱ (Pantsir-S1)",
-        source: "خبرگزاری رسمی سانا",
-        isHot: false
-      }
-    ];
-
     // --- STRATEGIC DEFENSE BUBBLES ---
     const DEFENSE_BUBBLES = [
       { name: "چتر پدافندی مرکز ایران (باور-۳۷۳ / اصفهان)", lat: 32.75, lng: 51.86, radius: 260000, color: "#06b6d4" },
@@ -1479,6 +1539,80 @@
       }
     ];
 
+    // --- MILITARY RECON & ADS-B FLIGHTS ---
+    const MILITARY_AIRCRAFT = [
+      {
+        id: "air-01",
+        callsign: "TITAN44",
+        model: "Boeing KC-135 Stratotanker",
+        operator: "US Air Force (USAF)",
+        squawk: "7700",
+        alt: "28,500 ft",
+        speed: "460 kts",
+        heading: 75,
+        lat: 33.43,
+        lng: 38.83,
+        path: [[32.8, 37.5], [33.43, 38.83], [33.9, 40.2], [33.2, 39.5]],
+        pathIdx: 1
+      },
+      {
+        id: "air-02",
+        callsign: "RAVEN09",
+        model: "Hermes 900 Kochav UAV",
+        operator: "Israeli Air Force (IAF)",
+        squawk: "4210",
+        alt: "18,200 ft",
+        speed: "125 kts",
+        heading: 190,
+        lat: 33.75,
+        lng: 35.40,
+        path: [[33.9, 35.45], [33.75, 35.40], [33.3, 35.25], [33.5, 35.15]],
+        pathIdx: 1
+      },
+      {
+        id: "air-03",
+        callsign: "TRIDENT21",
+        model: "Boeing P-8A Poseidon",
+        operator: "US Navy Maritime Patrol",
+        squawk: "5632",
+        alt: "22,000 ft",
+        speed: "390 kts",
+        heading: 120,
+        lat: 26.50,
+        lng: 55.20,
+        path: [[27.4, 53.8], [26.50, 55.20], [25.8, 56.6], [26.8, 56.1]],
+        pathIdx: 1
+      },
+      {
+        id: "air-04",
+        callsign: "VIPER71",
+        model: "F-35I Adir (Stealth CAP)",
+        operator: "IAF 140 Squadron",
+        squawk: "3314",
+        alt: "34,000 ft",
+        speed: "610 kts",
+        heading: 320,
+        lat: 31.25,
+        lng: 35.05,
+        path: [[30.8, 35.2], [31.25, 35.05], [31.8, 34.8], [31.4, 34.6]],
+        pathIdx: 1
+      },
+      {
+        id: "air-05",
+        callsign: "HEIDAR02",
+        model: "Mohajer-6 Reconnaissance UAV",
+        operator: "IRIAF / ارتش جمهوری اسلامی",
+        squawk: "1204",
+        alt: "15,500 ft",
+        speed: "115 kts",
+        heading: 350,
+        lat: 34.30,
+        lng: 46.50,
+        path: [[33.6, 46.3], [34.30, 46.50], [35.1, 46.2], [34.5, 45.9]],
+        pathIdx: 1
+      }
+    ];
+
     // --- APP STATE ---
     let eventsData = [];
     let curCategory = "all";
@@ -1488,15 +1622,34 @@
     let markersMap = {};
     let bubbleLayers = [];
     let trajectoryLayers = [];
+    let aircraftMarkers = {};
+    let heatLayer = null;
     let satLayer = null;
     let baseDarkLayer = null;
+    let baseDarkRefLayer = null;
+
     let showBubbles = true;
     let showTrajectories = true;
+    let showMilitaryAir = true;
+    let showHeatmap = false;
     let isSatActive = false;
+
+    // Timeline state
+    let timelineHoursAgo = 0; // 0 = now
+    let isTimelinePlaying = false;
+    let timelinePlayTimer = null;
+    let timelineSpeed = 1;
+
+    // Wire ticker state
+    let wireItems = [];
+    let wireIdx = 0;
+    let syncCountdownSec = 60;
+
+    // Currently focused event for export card
+    let activeExportEvent = null;
 
     // --- INITIALIZE MAP ---
     function initMap() {
-      // Centered on Middle East: Iran, Iraq, Levant, Gulf
       map = L.map("mapContainer", {
         center: [31.5, 45.0],
         zoom: 5.5,
@@ -1504,27 +1657,24 @@
         attributionControl: false
       });
 
-      // Zoom control in top-right
       L.control.zoom({ position: "topright" }).addTo(map);
 
-      // 1. Esri Dark Gray Base (Official, clean, high-resolution, no watermark, completely free)
+      // Esri Dark Gray Base & Reference
       baseDarkLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 16,
         attribution: "Esri, HERE, Garmin, OpenStreetMap"
       }).addTo(map);
 
-      // 1b. Esri Dark Gray Reference (Labels, borders, place names)
-      window.baseDarkRefLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
+      baseDarkRefLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 16
       }).addTo(map);
 
-      // 2. Esri Satellite Layer (Optional toggle)
+      // Esri Satellite Layer
       satLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
         maxZoom: 18,
         attribution: "Esri, Maxar, Earthstar Geographics"
       });
 
-      // Map move coordinate update
       map.on("mousemove", (e) => {
         const hud = document.getElementById("hudCoordsText");
         if (hud) {
@@ -1532,7 +1682,6 @@
         }
       });
 
-      // Map click handler (for picking coordinates when adding new event)
       map.on("click", (e) => {
         const modal = document.getElementById("addEventModal");
         if (modal && modal.classList.contains("open")) {
@@ -1544,13 +1693,13 @@
 
       renderDefenseBubbles();
       renderTrajectories();
+      initAircraftLayer();
     }
 
-    // --- RENDER DEFENSE BUBBLES ---
+    // --- DEFENSE BUBBLES ---
     function renderDefenseBubbles() {
       bubbleLayers.forEach(l => map.removeLayer(l));
       bubbleLayers = [];
-
       if (!showBubbles) return;
 
       DEFENSE_BUBBLES.forEach(b => {
@@ -1564,20 +1713,15 @@
           fillOpacity: 0.08
         }).addTo(map);
 
-        circle.bindTooltip(`<b>${b.name}</b>`, {
-          direction: "center",
-          className: "defense-tooltip"
-        });
-
+        circle.bindTooltip(`<b>${b.name}</b>`, { direction: "center" });
         bubbleLayers.push(circle);
       });
     }
 
-    // --- RENDER TRAJECTORIES ---
+    // --- TRAJECTORIES ---
     function renderTrajectories() {
       trajectoryLayers.forEach(l => map.removeLayer(l));
       trajectoryLayers = [];
-
       if (!showTrajectories) return;
 
       TRAJECTORIES.forEach(t => {
@@ -1588,23 +1732,146 @@
           dashArray: "8, 8"
         }).addTo(map);
 
-        polyline.bindTooltip(`<b>${t.name}</b>`, {
-          direction: "top"
-        });
-
+        polyline.bindTooltip(`<b>${t.name}</b>`, { direction: "top" });
         trajectoryLayers.push(polyline);
       });
     }
 
-    // --- RENDER MARKERS ---
+    // --- HEATMAP LAYER ---
+    function updateHeatmap() {
+      if (heatLayer) {
+        map.removeLayer(heatLayer);
+        heatLayer = null;
+      }
+      if (!showHeatmap || typeof L.heatLayer !== "function") return;
+
+      const heatPoints = eventsData.map(evt => {
+        let weight = 0.5;
+        if (evt.severity === "crit") weight = 1.0;
+        else if (evt.severity === "ops") weight = 0.75;
+        else if (evt.severity === "warn") weight = 0.5;
+        return [evt.lat, evt.lng, weight];
+      });
+
+      // Add regional flashpoint intensity
+      heatPoints.push([33.25, 35.35, 0.9]); // South Lebanon border
+      heatPoints.push([32.08, 34.78, 0.85]); // Tel Aviv
+      heatPoints.push([14.80, 42.95, 0.9]); // Hodeidah Red Sea
+      heatPoints.push([32.75, 51.86, 0.7]); // Isfahan
+
+      // Rich clusters for vivid military thermal hotspots
+      heatPoints.push([33.25, 35.35, 1.0], [33.30, 35.40, 0.9], [33.15, 35.25, 0.95]); // South Lebanon
+      heatPoints.push([32.08, 34.78, 0.95], [31.80, 34.65, 0.9], [31.50, 34.45, 0.9]); // Tel Aviv & Gaza strip
+      heatPoints.push([14.80, 42.95, 0.95], [14.60, 42.80, 0.9], [13.20, 43.10, 0.85]); // Hodeidah & Bab el-Mandeb
+      heatPoints.push([32.75, 51.86, 0.85], [33.50, 51.90, 0.8]); // Isfahan & Natanz
+      heatPoints.push([35.70, 51.40, 0.85], [35.65, 51.30, 0.8]); // Tehran
+      heatPoints.push([33.51, 36.27, 0.85]); // Damascus
+
+      heatLayer = L.heatLayer(heatPoints, {
+        radius: 46,
+        blur: 26,
+        maxZoom: 8,
+        minOpacity: 0.45,
+        max: 0.85,
+        gradient: {
+          0.15: "#06b6d4",
+          0.35: "#3b82f6",
+          0.55: "#10b981",
+          0.70: "#eab308",
+          0.85: "#f97316",
+          1.00: "#ef4444"
+        }
+      }).addTo(map);
+    }
+
+    // --- MILITARY RECON & ADS-B AIRCRAFT LAYER ---
+    function initAircraftLayer() {
+      updateAircraftPositions();
+      setInterval(updateAircraftPositions, 2000);
+    }
+
+    function updateAircraftPositions() {
+      if (!showMilitaryAir) {
+        Object.values(aircraftMarkers).forEach(m => map.removeLayer(m));
+        aircraftMarkers = {};
+        return;
+      }
+
+      MILITARY_AIRCRAFT.forEach(ac => {
+        // Step forward in cyclic waypoint path
+        ac.pathIdx = (ac.pathIdx + 1) % ac.path.length;
+        const curPt = ac.path[ac.pathIdx];
+        const nextPt = ac.path[(ac.pathIdx + 1) % ac.path.length];
+
+        // Smooth simulated position with small jitter
+        ac.lat = curPt[0] + (Math.random() - 0.5) * 0.05;
+        ac.lng = curPt[1] + (Math.random() - 0.5) * 0.05;
+
+        // Calculate heading
+        const dLat = nextPt[0] - curPt[0];
+        const dLng = nextPt[1] - curPt[1];
+        ac.heading = Math.round((Math.atan2(dLng, dLat) * 180 / Math.PI + 360) % 360);
+
+        const iconHtml = `
+          <div class="aircraft-marker-box" style="transform: rotate(${ac.heading}deg);">
+            <svg class="aircraft-icon-svg" viewBox="0 0 24 24" fill="#eab308">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+            <div class="aircraft-callsign-tag" style="transform: rotate(-${ac.heading}deg);">${ac.callsign}</div>
+          </div>
+        `;
+
+        const customIcon = L.divIcon({
+          html: iconHtml,
+          className: "aircraft-leaflet-marker",
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        });
+
+        if (aircraftMarkers[ac.id]) {
+          aircraftMarkers[ac.id].setLatLng([ac.lat, ac.lng]);
+          aircraftMarkers[ac.id].setIcon(customIcon);
+        } else {
+          const marker = L.marker([ac.lat, ac.lng], { icon: customIcon }).addTo(map);
+
+          marker.bindPopup(`
+            <div class="popup-brief-header">
+              <span class="event-cat-tag ops">✈️ گشت و شناسایی هوایی</span>
+              <span class="event-time-tag">🔴 رادار ADS-B فعال</span>
+            </div>
+            <div class="popup-title">پرواز نظامی: ${ac.callsign}</div>
+            <div class="popup-coords">📍 مدل پرنده: <b>${ac.model}</b></div>
+            <div class="popup-body">
+              اپراتور: <b>${ac.operator}</b><br>
+              ارتفاع پروازی: <b>${ac.alt}</b> | سرعت زمینی: <b>${ac.speed}</b><br>
+              کد اسکوک: <b>${ac.squawk}</b> | سمت پرواز: <b>${ac.heading}°</b>
+            </div>
+            <div class="popup-source-box">
+              <span>وضعیت: <b>پایش زنده کریدور</b></span>
+              <span>منبع: <b>ADS-B Exchange</b></span>
+            </div>
+          `);
+
+          marker.on("click", () => SFX.ping());
+          aircraftMarkers[ac.id] = marker;
+        }
+      });
+    }
+
+    // --- RENDER EVENT MARKERS ---
     function renderMarkers() {
-      // Clear existing markers
       Object.values(markersMap).forEach(m => map.removeLayer(m));
       markersMap = {};
 
       const filtered = getFilteredEvents();
 
       filtered.forEach(evt => {
+        // Timeline filter check: hide events that happened AFTER the selected point in history
+        if (timelineHoursAgo < 0) {
+          const evtAge = evt.hoursAgo !== undefined ? evt.hoursAgo : 0;
+          if (evtAge < Math.abs(timelineHoursAgo)) return;
+        }
+
         const iconHtml = createMarkerHtml(evt);
         const customIcon = L.divIcon({
           html: iconHtml,
@@ -1616,7 +1883,6 @@
 
         const marker = L.marker([evt.lat, evt.lng], { icon: customIcon }).addTo(map);
 
-        // Bind rich popup
         marker.bindPopup(`
           <div class="popup-brief-header">
             <span class="event-cat-tag ${evt.severity}">${getCatName(evt.category)}</span>
@@ -1629,6 +1895,9 @@
             <span>تسلیحات: <b>${evt.weapon || 'نامشخص'}</b></span>
             <span>منبع: <b>${evt.source}</b></span>
           </div>
+          <button class="popup-export-action" onclick="exportEventCard('${evt.id}', event)">
+            📸 ساخت کارت گرافیکی خبر
+          </button>
         `);
 
         marker.on("click", () => {
@@ -1638,6 +1907,8 @@
 
         markersMap[evt.id] = marker;
       });
+
+      updateHeatmap();
     }
 
     function createMarkerHtml(evt) {
@@ -1672,7 +1943,7 @@
       return map[cat] || "رویداد میدانی";
     }
 
-    // --- RENDER SIDEBAR FEED ---
+    // --- SIDEBAR FEED ---
     function renderSidebarFeed() {
       const container = document.getElementById("eventsFeedList");
       if (!container) return;
@@ -1707,10 +1978,15 @@
             <div class="event-summary">${evt.summary}</div>
             <div class="event-card-footer">
               <span class="weapon-badge">🎯 ${evt.weapon || 'تسلیحات نامشخص'}</span>
-              <button class="focus-map-action">
-                <span>نمایش روی نقشه</span>
-                <span>←</span>
-              </button>
+              <div class="card-actions-right">
+                <button class="card-export-btn" title="خروجی کارت گرافیکی خبر" onclick="exportEventCard('${evt.id}', event)">
+                  📸 کارت خبر
+                </button>
+                <button class="focus-map-action">
+                  <span>روی نقشه</span>
+                  <span>←</span>
+                </button>
+              </div>
             </div>
           </div>
         `;
@@ -1720,11 +1996,8 @@
     // --- FILTER LOGIC ---
     function getFilteredEvents() {
       return eventsData.filter(evt => {
-        // Category
         if (curCategory !== "all" && evt.category !== curCategory) return false;
-        // Region
         if (curRegion !== "all" && evt.region !== curRegion) return false;
-        // Search
         if (searchQuery) {
           const q = searchQuery.toLowerCase();
           const matchTitle = evt.title.toLowerCase().includes(q);
@@ -1744,23 +2017,18 @@
 
       SFX.ping();
 
-      // Pan & zoom map smoothly
       map.flyTo([evt.lat, evt.lng], 9, {
         animate: true,
         duration: 1.4
       });
 
-      // Open popup
       const marker = markersMap[evt.id];
       if (marker) {
-        setTimeout(() => {
-          marker.openPopup();
-        }, 800);
+        setTimeout(() => marker.openPopup(), 800);
       }
 
       highlightSidebarCard(id);
 
-      // In mobile view: auto-switch to map tab
       if (window.innerWidth <= 900) {
         switchMobileTab("map");
       }
@@ -1791,7 +2059,6 @@
     function updateClocks() {
       const now = new Date();
 
-      // Tehran: UTC+3:30
       const tehranStr = new Intl.DateTimeFormat("fa-IR", {
         timeZone: "Asia/Tehran",
         hour: "2-digit",
@@ -1800,7 +2067,6 @@
         hour12: false
       }).format(now);
 
-      // Jerusalem/Beirut: UTC+2 or UTC+3
       const jerusalemStr = new Intl.DateTimeFormat("en-GB", {
         timeZone: "Asia/Jerusalem",
         hour: "2-digit",
@@ -1809,7 +2075,6 @@
         hour12: false
       }).format(now);
 
-      // UTC
       const utcStr = new Intl.DateTimeFormat("en-GB", {
         timeZone: "UTC",
         hour: "2-digit",
@@ -1848,34 +2113,303 @@
       }
     }
 
-    // --- DATA PERSISTENCE ---
-    function loadSavedEvents() {
+    // --- LIVE FEED INGESTION & SYNC ---
+    async function syncEventsFromBackend() {
       try {
-        const raw = localStorage.getItem("me_osint_events");
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
+        const resp = await fetch("/osint/api/events");
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.events && Array.isArray(data.events)) {
+            const currentIds = new Set(eventsData.map(e => e.id));
+            let newItemsCount = 0;
+            data.events.forEach(item => {
+              if (!currentIds.has(item.id)) {
+                eventsData.unshift(item);
+                newItemsCount++;
+              }
+            });
+            if (newItemsCount > 0) {
+              SFX.alert();
+              renderMarkers();
+              renderSidebarFeed();
+              updateStats();
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Backend sync offline, operating in cached mode.");
+      }
+    }
+
+    async function fetchLiveWire() {
+      try {
+        const resp = await fetch("/osint/api/live_wire");
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.wire && Array.isArray(data.wire)) {
+            wireItems = data.wire;
+            cycleWireItem();
           }
         }
       } catch (e) {}
-      return DEFAULT_EVENTS;
     }
 
-    function saveEventsLocally() {
-      try {
-        localStorage.setItem("me_osint_events", JSON.stringify(eventsData));
-      } catch (e) {}
+    function cycleWireItem() {
+      if (!wireItems || wireItems.length === 0) return;
+      const item = wireItems[wireIdx % wireItems.length];
+      const elText = document.getElementById("liveWireHeadline");
+      const elSrc = document.getElementById("liveWireSource");
+      if (elText) {
+        elText.style.opacity = 0;
+        setTimeout(() => {
+          elText.textContent = item.title;
+          if (elSrc) elSrc.textContent = item.source;
+          elText.style.opacity = 1;
+        }, 300);
+      }
+      wireIdx++;
+    }
+
+    // --- TIMELINE CONTROLS ---
+    function updateTimelineDisplay() {
+      const lbl = document.getElementById("timelineTimeLabel");
+      if (!lbl) return;
+      if (timelineHoursAgo === 0) {
+        lbl.textContent = "زنده (هم‌اکنون)";
+      } else {
+        const h = Math.abs(timelineHoursAgo);
+        lbl.textContent = `${h.toFixed(1)} ساعت قبل (-${h.toFixed(1)}h)`;
+      }
+      renderMarkers();
+    }
+
+    function toggleTimelinePlay() {
+      isTimelinePlaying = !isTimelinePlaying;
+      const btn = document.getElementById("timelinePlayBtn");
+      const icon = document.getElementById("playIcon");
+      const text = document.getElementById("playText");
+
+      if (isTimelinePlaying) {
+        icon.textContent = "⏸️";
+        text.textContent = "توقف";
+        // If at now (0), rewind to -24h to begin playback
+        if (timelineHoursAgo >= 0) {
+          timelineHoursAgo = -24;
+          document.getElementById("timelineSlider").value = -24;
+        }
+        timelinePlayTimer = setInterval(() => {
+          timelineHoursAgo += 0.2 * timelineSpeed;
+          if (timelineHoursAgo >= 0) {
+            timelineHoursAgo = 0;
+            document.getElementById("timelineSlider").value = 0;
+            toggleTimelinePlay();
+          } else {
+            document.getElementById("timelineSlider").value = timelineHoursAgo;
+          }
+          updateTimelineDisplay();
+        }, 150);
+      } else {
+        icon.textContent = "▶️";
+        text.textContent = "پخش";
+        clearInterval(timelinePlayTimer);
+      }
+    }
+
+    // --- EXPORT GRAPHIC CARD GENERATOR ---
+    function exportEventCard(id, e) {
+      if (e) e.stopPropagation();
+      const evt = eventsData.find(x => x.id === id);
+      if (!evt) return;
+
+      activeExportEvent = evt;
+      const modal = document.getElementById("exportCardModal");
+      modal.classList.add("open");
+
+      drawExportCanvas(evt);
+    }
+
+    function drawExportCanvas(evt) {
+      const canvas = document.getElementById("exportCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const w = 1200;
+      const h = 675;
+
+      // 1. Dark Carbon Tactical Background
+      const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+      bgGrad.addColorStop(0, "#080c14");
+      bgGrad.addColorStop(0.5, "#0d1422");
+      bgGrad.addColorStop(1, "#0a0f1a");
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Subtle Grid Lines
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.06)";
+      ctx.lineWidth = 1;
+      for (let x = 40; x < w; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 40; y < h; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      // 3. Tactical Corner Reticles
+      ctx.strokeStyle = "#06b6d4";
+      ctx.lineWidth = 3;
+      const s = 25;
+      // Top-right
+      ctx.beginPath(); ctx.moveTo(w - 30 - s, 30); ctx.lineTo(w - 30, 30); ctx.lineTo(w - 30, 30 + s); ctx.stroke();
+      // Top-left
+      ctx.beginPath(); ctx.moveTo(30 + s, 30); ctx.lineTo(30, 30); ctx.lineTo(30, 30 + s); ctx.stroke();
+      // Bottom-right
+      ctx.beginPath(); ctx.moveTo(w - 30 - s, h - 30); ctx.lineTo(w - 30, h - 30); ctx.lineTo(w - 30, h - 30 - s); ctx.stroke();
+      // Bottom-left
+      ctx.beginPath(); ctx.moveTo(30 + s, h - 30); ctx.lineTo(30, h - 30); ctx.lineTo(30, h - 30 - s); ctx.stroke();
+
+      // 4. Header Bar
+      ctx.fillStyle = "#06b6d4";
+      ctx.font = "bold 24px Vazirmatn, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText("دیده‌بان خاورمیانه • MIDDLE EAST OSINT RADAR", w - 70, 75);
+
+      // Threat Badge
+      let badgeBg = "#ef4444";
+      let badgeText = "🔴 هشدار فوری / بحرانی";
+      if (evt.severity === "ops") { badgeBg = "#f97316"; badgeText = "🟠 وضعیت عملیاتی تاکتیکی"; }
+      else if (evt.severity === "warn") { badgeBg = "#eab308"; badgeText = "🟡 هشدار و آماده‌باش"; }
+      else if (evt.severity === "diplo") { badgeBg = "#06b6d4"; badgeText = "🔵 راهبردی و تحرکات"; }
+
+      ctx.fillStyle = badgeBg;
+      ctx.beginPath();
+      ctx.roundRect(70, 50, 240, 38, 8);
+      ctx.fill();
+
+      ctx.fillStyle = "#000";
+      ctx.font = "bold 16px Vazirmatn, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(badgeText, 190, 75);
+
+      // 5. Divider Line
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.3)";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(70, 110); ctx.lineTo(w - 70, 110); ctx.stroke();
+
+      // 6. Event Headline
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 32px Vazirmatn, sans-serif";
+      ctx.textAlign = "right";
+      wrapText(ctx, evt.title, w - 70, 165, w - 140, 44);
+
+      // 7. Location & Coordinates Box
+      ctx.fillStyle = "rgba(16, 22, 34, 0.85)";
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.4)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(70, 260, w - 140, 70, 10);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#06b6d4";
+      ctx.font = "bold 20px Vazirmatn, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(`📍 موقعیت: ${evt.location}`, w - 95, 304);
+
+      ctx.font = "16px monospace";
+      ctx.fillStyle = "#94a3b8";
+      ctx.textAlign = "left";
+      ctx.fillText(`GRID: ${evt.lat.toFixed(4)}° N , ${evt.lng.toFixed(4)}° E | ⏱️ ${evt.time}`, 95, 304);
+
+      // 8. Intelligence Summary Box
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "20px Vazirmatn, sans-serif";
+      ctx.textAlign = "right";
+      wrapText(ctx, `گزارش تحلیلی: ${evt.summary}`, w - 70, 380, w - 140, 36);
+
+      // 9. Armaments / Weapon Systems Tag
+      ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.beginPath();
+      ctx.roundRect(w - 70 - 450, 480, 450, 45, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#facc15";
+      ctx.font = "bold 18px Vazirmatn, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(`🎯 تسلیحات: ${evt.weapon || 'نامشخص'}`, w - 90, 510);
+
+      // Source Box
+      ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.beginPath();
+      ctx.roundRect(70, 480, 400, 45, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "16px Vazirmatn, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(`📡 منبع: ${evt.source}`, 90, 510);
+
+      // 10. Footer Branding Watermark
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.25)";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(70, 570); ctx.lineTo(w - 70, 570); ctx.stroke();
+
+      ctx.fillStyle = "#06b6d4";
+      ctx.font = "bold 17px Vazirmatn, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText("رصد لحظه‌ای تحولات جنگی و نظامی خاورمیانه در: c.q6v.ir/osint", w - 70, 615);
+
+      ctx.fillStyle = "#64748b";
+      ctx.font = "14px monospace";
+      ctx.textAlign = "left";
+      ctx.fillText("CONFIDENTIAL OSINT BRIEFING • VERIFIED", 70, 615);
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(" ");
+      let line = "";
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + " ";
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && n > 0) {
+          ctx.fillText(line, x, y);
+          line = words[n] + " ";
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, y);
     }
 
     // --- INIT APP ---
     document.addEventListener("DOMContentLoaded", () => {
-      eventsData = loadSavedEvents();
-
       initMap();
-      renderMarkers();
-      renderSidebarFeed();
-      updateStats();
+
+      // Initial backend sync
+      syncEventsFromBackend().then(() => {
+        renderMarkers();
+        renderSidebarFeed();
+        updateStats();
+      });
+
+      // Live wire ticker
+      fetchLiveWire();
+      setInterval(cycleWireItem, 5000);
+
+      // Countdown loop for live sync
+      setInterval(() => {
+        syncCountdownSec--;
+        if (syncCountdownSec <= 0) {
+          syncCountdownSec = 60;
+          syncEventsFromBackend();
+          fetchLiveWire();
+        }
+        const cd = document.getElementById("syncCountdown");
+        if (cd) cd.textContent = `⏳ ${syncCountdownSec}s`;
+      }, 1000);
 
       // Clocks loop
       updateClocks();
@@ -1930,20 +2464,65 @@
         SFX.ping();
       };
 
+      document.getElementById("toggleMilitaryAirBtn").onclick = function() {
+        showMilitaryAir = !showMilitaryAir;
+        this.classList.toggle("active", showMilitaryAir);
+        updateAircraftPositions();
+        SFX.ping();
+      };
+
+      document.getElementById("toggleHeatmapBtn").onclick = function() {
+        showHeatmap = !showHeatmap;
+        this.classList.toggle("active", showHeatmap);
+        updateHeatmap();
+        SFX.ping();
+      };
+
       document.getElementById("toggleSatLayerBtn").onclick = function() {
         isSatActive = !isSatActive;
         this.classList.toggle("active", isSatActive);
         if (isSatActive) {
           map.removeLayer(baseDarkLayer);
-          if (window.baseDarkRefLayer) map.removeLayer(window.baseDarkRefLayer);
+          if (baseDarkRefLayer) map.removeLayer(baseDarkRefLayer);
           satLayer.addTo(map);
         } else {
           map.removeLayer(satLayer);
           baseDarkLayer.addTo(map);
-          if (window.baseDarkRefLayer) window.baseDarkRefLayer.addTo(map);
+          if (baseDarkRefLayer) baseDarkRefLayer.addTo(map);
         }
         SFX.ping();
       };
+
+      // Timeline toggle button in header
+      document.getElementById("toggleTimelineBtn").onclick = function() {
+        const dock = document.getElementById("timelineDock");
+        const isOpen = dock.classList.toggle("open");
+        this.classList.toggle("active", isOpen);
+        SFX.ping();
+      };
+
+      // Timeline slider & play controls
+      document.getElementById("timelinePlayBtn").onclick = toggleTimelinePlay;
+      document.getElementById("timelineSlider").oninput = function(e) {
+        timelineHoursAgo = parseFloat(e.target.value);
+        updateTimelineDisplay();
+      };
+
+      // Timeline speeds
+      [
+        { id: "spd1x", spd: 1 },
+        { id: "spd2x", spd: 2 },
+        { id: "spd4x", spd: 4 }
+      ].forEach(cfg => {
+        const btn = document.getElementById(cfg.id);
+        if (btn) {
+          btn.onclick = () => {
+            document.querySelectorAll(".timeline-speed-chip").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            timelineSpeed = cfg.spd;
+          };
+        }
+      });
 
       // Reset view button
       document.getElementById("resetViewBtn").onclick = () => {
@@ -1961,16 +2540,16 @@
       // Refresh button
       document.getElementById("refreshFeedBtn").onclick = () => {
         SFX.ping();
-        renderMarkers();
-        renderSidebarFeed();
-        updateStats();
+        syncCountdownSec = 60;
+        syncEventsFromBackend();
+        fetchLiveWire();
       };
 
       // Mobile tabs
       document.getElementById("mobileTabMap").onclick = () => switchMobileTab("map");
       document.getElementById("mobileTabFeed").onclick = () => switchMobileTab("feed");
 
-      // MODAL CONTROLS
+      // ADD EVENT MODAL CONTROLS
       const modal = document.getElementById("addEventModal");
       document.getElementById("openAddModalBtn").onclick = () => {
         modal.classList.add("open");
@@ -1980,7 +2559,7 @@
       document.getElementById("cancelModalBtn").onclick = () => modal.classList.remove("open");
 
       // SAVE NEW EVENT
-      document.getElementById("saveEventBtn").onclick = () => {
+      document.getElementById("saveEventBtn").onclick = async () => {
         const title = document.getElementById("newEventTitle").value.trim();
         const category = document.getElementById("newEventCategory").value;
         const severity = document.getElementById("newEventSeverity").value;
@@ -2002,7 +2581,6 @@
         }
 
         const newEvt = {
-          id: `evt-${Date.now()}`,
           title,
           category,
           severity,
@@ -2010,15 +2588,32 @@
           location: locationName || "منطقه نامشخص",
           lat,
           lng,
-          time: "هم‌اکنون",
           summary: summary || "گزارش در دست بررسی توسط واحدهای دیده‌بان...",
           weapon: weapon || "نامشخص",
-          source: source || "گزارش ثبت‌شده توسط اپراتور",
-          isHot: true
+          source: source || "گزارش ثبت‌شده توسط اپراتور"
         };
 
-        eventsData.unshift(newEvt);
-        saveEventsLocally();
+        // Post to backend
+        try {
+          const resp = await fetch("/osint/api/events", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newEvt)
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data.event) eventsData.unshift(data.event);
+          } else {
+            // Local fallback
+            newEvt.id = `evt-${Date.now()}`;
+            newEvt.time = "هم‌اکنون";
+            eventsData.unshift(newEvt);
+          }
+        } catch (e) {
+          newEvt.id = `evt-${Date.now()}`;
+          newEvt.time = "هم‌اکنون";
+          eventsData.unshift(newEvt);
+        }
 
         modal.classList.remove("open");
         SFX.alert();
@@ -2034,8 +2629,44 @@
         renderSidebarFeed();
         updateStats();
 
-        // Focus on newly added event!
-        focusOnEvent(newEvt.id);
+        focusOnEvent(eventsData[0].id);
+      };
+
+      // EXPORT CARD MODAL CONTROLS
+      const exportModal = document.getElementById("exportCardModal");
+      document.getElementById("closeExportModalBtn").onclick = () => exportModal.classList.remove("open");
+      document.getElementById("cancelExportModalBtn").onclick = () => exportModal.classList.remove("open");
+
+      // Download PNG button
+      document.getElementById("downloadCardImgBtn").onclick = () => {
+        const canvas = document.getElementById("exportCanvas");
+        if (!canvas) return;
+        const link = document.createElement("a");
+        link.download = `OSINT-${activeExportEvent ? activeExportEvent.id : 'report'}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        SFX.ping();
+      };
+
+      // Copy Caption button
+      document.getElementById("copyCaptionBtn").onclick = () => {
+        if (!activeExportEvent) return;
+        const text = `🚨 ${activeExportEvent.title}
+
+📍 موقعیت: ${activeExportEvent.location}
+⏱️ زمان: ${activeExportEvent.time}
+🎯 تسلیحات: ${activeExportEvent.weapon || 'نامشخص'}
+
+📝 شرح رویداد:
+${activeExportEvent.summary}
+
+📡 منبع: ${activeExportEvent.source}
+🛰️ رصد زنده تحولات خاورمیانه در:
+https://c.q6v.ir/osint`;
+        navigator.clipboard.writeText(text).then(() => {
+          alert("✅ متن خبر و کپشن کامل با موفقیت کپی شد!");
+          SFX.ping();
+        });
       };
     });
   </script>
