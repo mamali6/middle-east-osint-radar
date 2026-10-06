@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>رادار دیده‌بان خاورمیانه | پایگاه رصد و مانیتورینگ زنده تحولات (OSINT Radar)</title>
+
+  <!-- Local Leaflet Styles -->
+  <link rel="stylesheet" href="/osint/leaflet/leaflet.css">
+
+  <style>
+    /* Local Fonts */
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('/osint/fonts/Vazirmatn-400.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('/osint/fonts/Vazirmatn-700.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('/osint/fonts/Vazirmatn-900.woff2') format('woff2');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg-dark: #0a0d14;
+      --bg-surface: #101622;
+      --bg-surface-raised: #162032;
+      --bg-surface-border: #1e2c45;
+      --accent-cyan: #06b6d4;
+      --accent-cyan-glow: rgba(6, 182, 212, 0.4);
+      --accent-red: #ef4444;
+      --accent-red-glow: rgba(239, 68, 68, 0.45);
+      --accent-orange: #f97316;
+      --accent-yellow: #eab308;
+      --accent-green: #10b981;
+      --accent-purple: #a855f7;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-stack: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* TOP COMMAND BAR */
+    header.command-header {
+      background: linear-gradient(180deg, #0d131f 0%, #0a0d14 100%);
+      border-bottom: 1px solid var(--bg-surface-border);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 1000;
+      flex-shrink: 0;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .radar-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-cyan);
+      box-shadow: 0 0 15px var(--accent-cyan-glow);
+      position: relative;
+    }
+
+    .radar-sweep-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      top: 6px;
+      right: 6px;
+      animation: sweepPulse 1.8s infinite ease-out;
+    }
+
+    @keyframes sweepPulse {
+      0% { transform: scale(0.6); opacity: 1; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-main-title {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-sub-badge {
+      font-size: 10.5px;
+      color: var(--accent-cyan);
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+
+    .live-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .live-pulse-dot {
+      width: 7px;
+      height: 7px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: blinkRed 1s infinite alternate;
+    }
+
+    @keyframes blinkRed {
+      from { opacity: 0.4; }
+      to { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* HUD CLOCKS */
+    .hud-clocks {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--bg-surface-border);
+      padding: 4px 12px;
+      border-radius: 8px;
+    }
+
+    .clock-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 55px;
+    }
+
+    .clock-label {
+      font-size: 9px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .clock-time {
+      font-size: 12px;
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .clock-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--bg-surface-border);
+    }
+
+    /* DEFCON ALERT PILL */
+    .defcon-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(249, 115, 22, 0.12);
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      color: var(--accent-orange);
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--bg-surface-border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .hud-btn:hover {
+      background: var(--bg-surface-raised);
+      color: #fff;
+      border-color: var(--accent-cyan);
+    }
+
+    .hud-btn.active {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      border: 1px solid #38bdf8;
+      box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+    }
+    .hud-btn-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #0284c7);
+      box-shadow: 0 0 18px rgba(2, 132, 199, 0.6);
+    }
+
+    /* MAIN APP WORKSPACE: SPLIT MAP & FEED */
+    .main-workspace {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 56px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* MAP CONTAINER */
+    #mapContainer {
+      flex: 1;
+      height: 100%;
+      background: #080c14;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* HUD OVERLAYS ON MAP */
+    .map-hud-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .map-hud-pill {
+      pointer-events: auto;
+      background: rgba(10, 15, 26, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--bg-surface-border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .map-coords-pill {
+      font-family: monospace;
+      color: var(--accent-cyan);
+      font-size: 11px;
+    }
+
+    .map-quick-toggles {
+      position: absolute;
+      bottom: 24px;
+      left: 14px;
+      z-index: 500;
+      display: flex;
+      gap: 8px;
+      background: rgba(10, 15, 26, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--bg-surface-border);
+      padding: 6px;
+      border-radius: 10px;
+    }
+
+    .toggle-chip {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    .toggle-chip:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .toggle-chip.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    /* SIDEBAR FEED */
+    aside.osint-sidebar {
+      width: 440px;
+      max-width: 100%;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--bg-surface-border);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      z-index: 200;
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.4);
+      flex-shrink: 0;
+    }
+
+    .sidebar-header-box {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--bg-surface-border);
+      background: rgba(13, 19, 31, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-heading {
+      font-size: 13.5px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feed-count-badge {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan);
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    /* SEARCH INPUT */
+    .search-bar-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-dark);
+      border: 1px solid var(--bg-surface-border);
+      padding: 8px 36px 8px 12px;
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font-stack);
+      font-size: 12px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan-glow);
+    }
+    .search-icon-svg {
+      position: absolute;
+      right: 10px;
+      width: 16px;
+      height: 16px;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    /* FILTER TABS */
+    .filter-pills-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .filter-pills-row::-webkit-scrollbar { display: none; }
+
+    .cat-pill {
+      white-space: nowrap;
+      background: var(--bg-dark);
+      border: 1px solid var(--bg-surface-border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cat-pill:hover {
+      color: #fff;
+      border-color: var(--text-muted);
+    }
+    .cat-pill.active {
+      background: rgba(6, 182, 212, 0.18);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    /* REGION FILTER */
+    .region-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-top: 2px;
+      scrollbar-width: none;
+    }
+    .region-pill {
+      white-space: nowrap;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 11px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .region-pill:hover { color: #fff; }
+    .region-pill.active {
+      color: var(--accent-yellow);
+      font-weight: 800;
+      background: rgba(234, 179, 8, 0.12);
+    }
+
+    /* STATS OVERVIEW RIBBON */
+    .stats-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(10, 15, 26, 0.4);
+      border-bottom: 1px solid var(--bg-surface-border);
+    }
+    .stat-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--bg-surface-border);
+      padding: 6px 8px;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .stat-card-val {
+      font-size: 13.5px;
+      font-weight: 900;
+      font-family: monospace;
+      color: #fff;
+    }
+    .stat-card-label {
+      font-size: 9.5px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* EVENTS FEED SCROLLABLE LIST */
+    .events-feed-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      padding-bottom: 90px; /* generous bottom clearance for floating mobile dock */
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* EVENT CARD */
+    .event-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--bg-surface-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      height: auto;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 4px;
+      background: var(--text-dim);
+      transition: width 0.2s;
+    }
+
+    .event-card.crit::before { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red); }
+    .event-card.ops::before { background: var(--accent-orange); }
+    .event-card.warn::before { background: var(--accent-yellow); }
+    .event-card.diplo::before { background: var(--accent-cyan); }
+    .event-card.naval::before { background: var(--accent-purple); }
+
+    .event-card:hover {
+      background: var(--bg-surface-raised);
+      border-color: #2e3e5b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    .event-card:hover::before { width: 6px; }
+
+    .event-card.active-target {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px var(--accent-cyan-glow);
+      background: rgba(6, 182, 212, 0.08);
+    }
+
+    .event-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .event-cat-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .event-cat-tag.crit { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+    .event-cat-tag.ops { background: rgba(249, 115, 22, 0.15); color: #fdba74; }
+    .event-cat-tag.warn { background: rgba(234, 179, 8, 0.15); color: #fde047; }
+    .event-cat-tag.diplo { background: rgba(6, 182, 212, 0.15); color: #67e8f9; }
+    .event-cat-tag.naval { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; }
+
+    .event-time-tag {
+      font-size: 10.5px;
+      color: var(--text-dim);
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .event-headline {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .event-location-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--accent-cyan);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .event-summary {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      padding-bottom: 2px;
+    }
+
+    .event-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 6px;
+      margin-top: 4px;
+    }
+
+    .weapon-badge {
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: monospace;
+    }
+
+    .focus-map-action {
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* LEAFLET CUSTOM POPUP & MARKER STYLES */
+    .leaflet-popup-content-wrapper {
+      background: rgba(13, 19, 31, 0.95) !important;
+      backdrop-filter: blur(12px) !important;
+      border: 1px solid var(--accent-cyan) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--accent-cyan-glow) !important;
+      color: var(--text-main) !important;
+      padding: 0 !important;
+      direction: rtl !important;
+      font-family: var(--font-stack) !important;
+    }
+    .leaflet-popup-content {
+      margin: 0 !important;
+      padding: 14px !important;
+      width: 290px !important;
+      line-height: 1.5 !important;
+    }
+    .leaflet-popup-tip {
+      background: #0d131f !important;
+      border: 1px solid var(--accent-cyan) !important;
+    }
+    .leaflet-container a.leaflet-popup-close-button {
+      color: #94a3b8 !important;
+      padding: 8px !important;
+    }
+
+    .popup-brief-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--bg-surface-border);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .popup-title {
+      font-size: 13.5px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .popup-coords {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+    }
+    .popup-body {
+      font-size: 11.5px;
+      color: #cbd5e1;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .popup-source-box {
+      background: var(--bg-dark);
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      color: var(--text-dim);
+      border: 1px solid var(--bg-surface-border);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* CUSTOM SVG TACTICAL MARKERS */
+    .tactical-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .tactical-marker:hover {
+      transform: scale(1.25);
+    }
+
+    .marker-pulse-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      animation: markerPulse 2s infinite ease-out;
+      pointer-events: none;
+    }
+    @keyframes markerPulse {
+      0% { transform: scale(1); opacity: 0.9; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+
+    .marker-inner-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      border: 2px solid #fff;
+    }
+
+    /* MODAL FOR ADDING NEW EVENT */
+    .osint-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .osint-modal-backdrop.open { display: flex; }
+
+    .osint-modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--accent-cyan-glow);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      animation: modalSlide 0.25s ease-out;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-head {
+      background: #0d131f;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--bg-surface-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-head-title {
+      font-size: 14.5px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .modal-close-btn:hover { color: #fff; }
+
+    .modal-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .form-input, .form-select, .form-textarea {
+      background: var(--bg-dark);
+      border: 1px solid var(--bg-surface-border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #fff;
+      font-family: var(--font-stack);
+      font-size: 12.5px;
+      outline: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan-glow);
+    }
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .modal-foot {
+      padding: 12px 18px;
+      background: #0d131f;
+      border-top: 1px solid var(--bg-surface-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* MOBILE FLOATING SWITCHER */
+    .mobile-view-tabs {
+      display: none;
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13, 19, 31, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+      border-radius: 30px;
+      padding: 4px;
+      z-index: 1500;
+      gap: 4px;
+    }
+    .mobile-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mobile-tab-btn.active {
+      background: var(--accent-cyan);
+      color: #000;
+    }
+
+    @media (max-width: 900px) {
+      .hud-clocks, .defcon-pill { display: none; }
+      .brand-sub-badge { display: none; }
+      
+      header.command-header {
+        padding: 8px 12px;
+      }
+      .brand-main-title {
+        font-size: 13.5px;
+      }
+      .live-status-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+      }
+      .hud-btn span.btn-label { display: none; }
+      .hud-btn {
+        padding: 6px 8px;
+      }
+      .hud-btn-primary {
+        padding: 6px 12px;
+      }
+      .hud-btn-primary span.btn-label { display: inline !important; }
+
+      .main-workspace {
+        flex-direction: column;
+        height: calc(100vh - 52px);
+      }
+      
+      aside.osint-sidebar {
+        width: 100%;
+        height: 100%;
+        display: none;
+      }
+      aside.osint-sidebar.mobile-visible {
+        display: flex;
+      }
+
+      #mapContainer.mobile-hidden {
+        display: none;
+      }
+
+      /* Compact sidebar header on mobile */
+      .sidebar-header-box {
+        padding: 8px 12px;
+        gap: 8px;
+      }
+      .sidebar-heading {
+        font-size: 12.5px;
+      }
+      .search-input {
+        padding: 6px 32px 6px 10px;
+        font-size: 11.5px;
+      }
+
+      /* Compact stats ribbon on mobile */
+      .stats-ribbon {
+        padding: 4px 10px;
+        gap: 4px;
+      }
+      .stat-card {
+        padding: 4px 6px;
+      }
+      .stat-card-val {
+        font-size: 12px;
+      }
+      .stat-card-label {
+        font-size: 8.5px;
+      }
+
+      /* Quick toggles on map */
+      .map-quick-toggles {
+        bottom: 68px;
+        left: 8px;
+        right: 8px;
+        justify-content: center;
+        padding: 4px;
+        gap: 4px;
+      }
+      .toggle-chip {
+        font-size: 10.5px;
+        padding: 5px 8px;
+      }
+
+      /* Floating switcher with backdrop glow */
+      .events-feed-list {
+        padding-bottom: 140px !important;
+      }
+
+      .mobile-view-tabs {
+        display: flex;
+        bottom: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(6, 182, 212, 0.3);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. TOP COMMAND BAR -->
+  <header class="command-header">
+    <div class="brand-section">
+      <div class="radar-icon-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10"></path>
+          <circle cx="12" cy="12" r="4"></circle>
+          <line x1="12" y1="12" x2="19" y2="5"></line>
+        </svg>
+        <div class="radar-sweep-dot"></div>
+      </div>
+      <div class="brand-titles">
+        <div class="brand-main-title">
+          <span>دیده‌بان خاورمیانه</span>
+          <span class="live-status-badge"><span class="live-pulse-dot"></span> رصد زنده</span>
+        </div>
+        <div class="brand-sub-badge">MIDDLE EAST OSINT RADAR • V1.0</div>
+      </div>
+    </div>
+
+    <!-- HUD CLOCKS -->
+    <div class="hud-clocks">
+      <div class="clock-item">
+        <span class="clock-label">تهران</span>
+        <span class="clock-time" id="clockTehran">--:--:--</span>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-item">
+        <span class="clock-label">قدس / بیروت</span>
+        <span class="clock-time" id="clockJerusalem">--:--:--</span>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-item">
+        <span class="clock-label">UTC</span>
+        <span class="clock-time" id="clockUtc">--:--:--</span>
+      </div>
+    </div>
+
+    <!-- DEFCON STATUS -->
+    <div class="defcon-pill">
+      <span>⚠️ آماده‌باش سطح ۲ (نارنجی)</span>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="header-actions">
+      <button class="hud-btn" id="sfxToggleBtn" title="تنظیم صدا">
+        <span id="sfxIcon">🔊</span>
+      </button>
+      <button class="hud-btn" id="resetViewBtn" title="بازنشانی زاویه نقشه">
+        <span>🌐</span><span class="btn-label"> بازنشانی نما</span>
+      </button>
+      <button class="hud-btn hud-btn-primary" id="openAddModalBtn">
+        <span>➕</span><span class="btn-label"> ثبت رویداد</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. MAIN APP WORKSPACE -->
+  <main class="main-workspace">
+
+    <!-- SIDEBAR: EVENT FEED & FILTERS -->
+    <aside class="osint-sidebar" id="sidebarFeed">
+      <div class="sidebar-header-box">
+        <div class="sidebar-title-row">
+          <div class="sidebar-heading">
+            <span>📡 فید رویدادهای میدانی و امنیتی</span>
+            <span class="feed-count-badge" id="eventsCountBadge">۰</span>
+          </div>
+          <button class="hud-btn" id="refreshFeedBtn" style="padding: 4px 8px; font-size: 11px;">
+            <span>🔄 بروزرسانی</span>
+          </button>
+        </div>
+
+        <!-- SEARCH INPUT -->
+        <div class="search-bar-wrap">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="search-input" id="osintSearchInput" placeholder="جستجو در مناطق، تسلیحات، اهداف یا منابع...">
+        </div>
+
+        <!-- CATEGORY PILLS -->
+        <div class="filter-pills-row" id="catFilterRow">
+          <button class="cat-pill active" data-cat="all">همه دسته‌ها</button>
+          <button class="cat-pill" data-cat="missile">🚀 موشکی و پهپادی</button>
+          <button class="cat-pill" data-cat="airdefense">🛡️ پدافند هوایی</button>
+          <button class="cat-pill" data-cat="aviation">✈️ پروازهای رزمی</button>
+          <button class="cat-pill" data-cat="naval">⚓ عملیات دریایی</button>
+          <button class="cat-pill" data-cat="alert">🚨 هشدارهای قرمز</button>
+        </div>
+
+        <!-- REGION PILLS -->
+        <div class="region-row" id="regionFilterRow">
+          <button class="region-pill active" data-region="all">همه مناطق</button>
+          <button class="region-pill" data-region="iran">🇮🇷 ایران</button>
+          <button class="region-pill" data-region="israel">🇮🇱 اراضی اشغالی</button>
+          <button class="region-pill" data-region="lebanon">🇱🇧 لبنان</button>
+          <button class="region-pill" data-region="yemen">🇾🇪 دریای سرخ و یمن</button>
+          <button class="region-pill" data-region="syria_iraq">🇸🇾/🇮🇶 سوریه و عراق</button>
+        </div>
+      </div>
+
+      <!-- STATS RIBBON -->
+      <div class="stats-ribbon">
+        <div class="stat-card">
+          <div class="stat-card-val" style="color:var(--accent-red);" id="statCritCount">۸</div>
+          <div class="stat-card-label">بحرانی/فوری</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-val" style="color:var(--accent-cyan);" id="statInterceptCount">۱۲</div>
+          <div class="stat-card-label">رهگیری پدافند</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-val" style="color:var(--accent-yellow);" id="statSortieCount">۹</div>
+          <div class="stat-card-label">سورتی هوایی</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-val" style="color:var(--accent-green);" id="statTotal24h">۲۹</div>
+          <div class="stat-card-label">رویداد ۲۴h</div>
+        </div>
+      </div>
+
+      <!-- FEED LIST -->
+      <div class="events-feed-list" id="eventsFeedList">
+        <!-- Rendered dynamically -->
+      </div>
+    </aside>
+
+    <!-- MAP CONTAINER -->
+    <div id="mapContainer">
+      <!-- HUD MAP OVERLAY -->
+      <div class="map-hud-overlay">
+        <div class="map-hud-pill">
+          <span>موقعیت مکانی رادار:</span>
+          <span class="map-coords-pill" id="hudCoordsText">32.42° N , 51.68° E</span>
+        </div>
+      </div>
+
+      <!-- QUICK MAP TOGGLE BUTTONS -->
+      <div class="map-quick-toggles">
+        <button class="toggle-chip active" id="toggleDefenseBubblesBtn">
+          <span>🛡️ چتر پدافندی</span>
+        </button>
+        <button class="toggle-chip active" id="toggleTrajectoriesBtn">
+          <span>🚀 بردارهای تهاجم</span>
+        </button>
+        <button class="toggle-chip" id="toggleSatLayerBtn">
+          <span>🛰️ تصویر ماهواره‌ای</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MOBILE VIEW SWITCHER BUTTONS -->
+  <div class="mobile-view-tabs">
+    <button class="mobile-tab-btn active" id="mobileTabMap">
+      <span>🗺️ نقشه زنده</span>
+    </button>
+    <button class="mobile-tab-btn" id="mobileTabFeed">
+      <span>📰 اخبار و فید</span>
+    </button>
+  </div>
+
+  <!-- ADD EVENT MODAL -->
+  <div class="osint-modal-backdrop" id="addEventModal">
+    <div class="osint-modal-card">
+      <div class="modal-head">
+        <div class="modal-head-title">
+          <span>➕ ثبت رویداد میدانی / هشدار جدید</span>
+        </div>
+        <button class="modal-close-btn" id="closeModalBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label class="form-label">عنوان اصلی رویداد</label>
+          <input type="text" class="form-input" id="newEventTitle" placeholder="مثلاً: فعال‌سازی پدافند در جنوب حیفا یا شلیک موشک‌های بالستیک...">
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label class="form-label">دسته‌بندی حادثه</label>
+            <select class="form-select" id="newEventCategory">
+              <option value="missile">🚀 موشکی و پهپادی</option>
+              <option value="airdefense">🛡️ پدافند هوایی</option>
+              <option value="aviation">✈️ پروازهای رزمی</option>
+              <option value="naval">⚓ عملیات دریایی</option>
+              <option value="alert">🚨 هشدارهای قرمز / آژیر</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">سطح بحران</label>
+            <select class="form-select" id="newEventSeverity">
+              <option value="crit">🔴 بحرانی / شلیک مستقیم</option>
+              <option value="ops">🟠 عملیاتی / تاکتیکی</option>
+              <option value="warn">🟡 آماده‌باش و هشدار</option>
+              <option value="diplo">🔵 راهبردی و تحرکات</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label class="form-label">منطقه / کشور</label>
+            <select class="form-select" id="newEventRegion">
+              <option value="iran">🇮🇷 ایران</option>
+              <option value="israel">🇮🇱 اراضی اشغالی</option>
+              <option value="lebanon">🇱🇧 لبنان</option>
+              <option value="yemen">🇾🇪 دریای سرخ و یمن</option>
+              <option value="syria_iraq">🇸🇾/🇮🇶 سوریه و عراق</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">مکان دقیق (شهر / پایگاه)</label>
+            <input type="text" class="form-input" id="newEventLocationName" placeholder="مثلاً: تل‌آویو - پایگاه گالیلوت">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label class="form-label">عرض جغرافیایی (Latitude)</label>
+            <input type="number" step="0.0001" class="form-input" id="newEventLat" placeholder="32.0853">
+          </div>
+          <div class="form-row">
+            <label class="form-label">طول جغرافیایی (Longitude)</label>
+            <input type="number" step="0.0001" class="form-input" id="newEventLng" placeholder="34.7818">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">توضیحات و گزارش تحلیلی میدانی</label>
+          <textarea class="form-textarea" id="newEventSummary" rows="3" placeholder="شرح واقعه، تلفات یا خسارات احتمالی، هشدارهای پدافند هوایی..."></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label class="form-label">تسلیحات یا واحد مربوطه</label>
+            <input type="text" class="form-input" id="newEventWeapon" placeholder="شاهد ۱۳۶ / پیکان ۳ / باور-۳۷۳">
+          </div>
+          <div class="form-row">
+            <label class="form-label">منبع خبر (OSINT Source)</label>
+            <input type="text" class="form-input" id="newEventSource" placeholder="کانال‌های نظامی / تصاویر ماهواره‌ای">
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="hud-btn" id="cancelModalBtn">انصراف</button>
+        <button class="hud-btn hud-btn-primary" id="saveEventBtn">ثبت و افزودن به نقشه 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local Leaflet Script -->
+  <script src="/osint/leaflet/leaflet.js"></script>
+
+  <!-- APP LOGIC SCRIPT -->
+  <script>
+    // --- TACTICAL SOUND ENGINE ---
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    const SFX = {
+      ping() {
+        if (!soundEnabled) return;
+        try {
+          const ctx = getAudioCtx();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(880, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.13);
+        } catch (e) {}
+      },
+      alert() {
+        if (!soundEnabled) return;
+        try {
+          const ctx = getAudioCtx();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(440, ctx.currentTime);
+          osc.frequency.setValueAtTime(660, ctx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.22);
+        } catch (e) {}
+      }
+    };
+
+    // --- INITIAL OSINT EVENTS DATASET ---
+    const DEFAULT_EVENTS = [
+      {
+        id: "evt-01",
+        title: "آماده‌باش حداکثری سامانه‌های باور-۳۷۳ و سامانه سوم خرداد در مرکز کشور",
+        category: "airdefense",
+        severity: "ops",
+        region: "iran",
+        location: "اصفهان، پایگاه هشتم شکاری و تاسیسات هسته‌ای",
+        lat: 32.7500,
+        lng: 51.8600,
+        time: "۱۸ دقیقه پیش",
+        summary: "افزایش سطح هوشیاری یگان‌های پدافندی ارتش و سپاه در شعاع ۲۰۰ کیلومتری اصفهان و رصد مستمر کریدورهای غرب کشور با رادارهای کشف افق.",
+        weapon: "باور-۳۷۳ / سوم خرداد",
+        source: "دیده‌بان‌های راداری و منابع محلی",
+        isHot: true
+      },
+      {
+        id: "evt-02",
+        title: "فعال‌سازی آژیرهای هشدار در منطقه دان و پایگاه اطلاعاتی گالیلوت",
+        category: "alert",
+        severity: "crit",
+        region: "israel",
+        location: "تل‌آویو، مقر گالیلوت و تل‌آویو بزرگ",
+        lat: 32.1450,
+        lng: 34.8050,
+        time: "۲۸ دقیقه پیش",
+        summary: "به صدا درآمدن آژیر خطر در شمال تل‌آویو پس از رصد ورود پرتابه‌های ناشناس از سمت شمال؛ سامانه‌های فلاخن داوود و پیکان فعال شدند.",
+        weapon: "پیکان ۳ / فلاخن داوود",
+        source: "سامانه رسمی پیک جبهه داخلی",
+        isHot: true
+      },
+      {
+        id: "evt-03",
+        title: "پرواز گشت‌های شناسایی پهپادهای هرمس ۹۰۰ بر فراز آسمان بیروت",
+        category: "aviation",
+        severity: "warn",
+        region: "lebanon",
+        location: "بیروت، حریم هوایی ضاحیه جنوبی",
+        lat: 33.8500,
+        lng: 35.5000,
+        time: "۴۲ دقیقه پیش",
+        summary: "پرواز مداوم پرنده‌های بدون سرنشین شناسایی ارتش اسرائیل در ارتفاع متوسط و تصویربرداری الکترواپتیکال از مناطق جنوبی پایتخت لبنان.",
+        weapon: "Hermes 900 UAV",
+        source: "گزارش‌های ناوبری هوایی بیروت",
+        isHot: false
+      },
+      {
+        id: "evt-04",
+        title: "گزارش حادثه امنیتی دریایی UKMTO در ۶۵ مایلی بندر الحدیده",
+        category: "naval",
+        severity: "crit",
+        region: "yemen",
+        location: "دریای سرخ، جنوب غرب بندر الحدیده",
+        lat: 14.7900,
+        lng: 42.9500,
+        time: "۱ ساعت پیش",
+        summary: "سازمان عملیات تجارت دریایی بریتانیا از حمله دو فروند شناور تندرو انتحاری و شلیک پرتابه ضدکشتی به یک تانکر عبوری در تنگه باب‌المندب خبر داد.",
+        weapon: "موشک ضدکشتی صیاد / قایق بدون سرنشین",
+        source: "UKMTO Maritime Advisory",
+        isHot: true
+      },
+      {
+        id: "evt-05",
+        title: "رهگیری پهپاد انتحاری بر فراز بندر و خلیج حیفا توسط گنبد آهنین",
+        category: "missile",
+        severity: "crit",
+        region: "israel",
+        location: "حیفا، بندرگاه و حریم دریایی",
+        lat: 32.8190,
+        lng: 34.9980,
+        time: "۱ ساعت و ۱۵ دقیقه پیش",
+        summary: "شلیک دو تیر موشک تمیر از سامانه گنبد آهنین به سمت یک ریزپرنده انتحاری نفوذی که از خاک لبنان به سمت لنگرگاه و پالایشگاه حیفا پرواز کرده بود.",
+        weapon: "گنبد آهنین (Tamir)",
+        source: "رسانه‌های محلی و تصاویر شاهدان",
+        isHot: false
+      },
+      {
+        id: "evt-06",
+        title: "رصد پروازهای فشرده سوخت‌رسان KC-135 و جنگنده‌های ائتلاف در التنف",
+        category: "aviation",
+        severity: "ops",
+        region: "syria_iraq",
+        location: "مرز سوریه-اردن-عراق، پایگاه التنف",
+        lat: 33.4300,
+        lng: 38.8300,
+        time: "۲ ساعت پیش",
+        summary: "فعالیت سنگین راداری و پشتیبانی هوایی سوخت‌رسان‌های آمریکایی در کریدور بیابانی بادیه الشام و مرز غربی استان الانبار عراق.",
+        weapon: "Boeing KC-135 Stratotanker",
+        source: "داده‌های فلایت رادار ADS-B Exchange",
+        isHot: false
+      },
+      {
+        id: "evt-07",
+        title: "رزمایش پدافند ساحلی و موشک‌های کروز قدیر در تنگه هرمز",
+        category: "naval",
+        severity: "ops",
+        region: "iran",
+        location: "بندرعباس، جزیره قشم و تنگه هرمز",
+        lat: 27.1500,
+        lng: 56.2800,
+        time: "۲ ساعت و ۴۰ دقیقه پیش",
+        summary: "استقرار پرتابگرهای متحرک موشک‌های کروز ساحل به دریای قدیر و پایش الکترونیکی خروج ناوگروه رزمی خارجی توسط پهپادهای ابابیل ۵.",
+        weapon: "کروز دریایی قدیر / پهپاد ابابیل",
+        source: "قرارگاه نیروی دریایی",
+        isHot: false
+      },
+      {
+        id: "evt-08",
+        title: "استقرار اسکادران جدید جنگنده‌های F-35I آدور در پایگاه نواتیم",
+        category: "aviation",
+        severity: "diplo",
+        region: "israel",
+        location: "صحرای نقب، پایگاه هوایی نواتیم",
+        lat: 31.2080,
+        lng: 35.0120,
+        time: "۳ ساعت پیش",
+        summary: "تصاویر ماهواره‌ای نشان‌دهنده افزایش حضور و آماده‌باش جنگنده‌های نسل پنجم F-35 در آشیانه‌های مستحکم پایگاه نواتیم در جنوب اراضی اشغالی است.",
+        weapon: "F-35I Adir Stealth Fighter",
+        source: "تصاویر ماهواره‌ای Planet Labs",
+        isHot: false
+      },
+      {
+        id: "evt-09",
+        title: "فعالیت پدافند موشکی پانتسیر در جنوب غربی دمشق",
+        category: "airdefense",
+        severity: "warn",
+        region: "syria_iraq",
+        location: "دمشق، منطقه الکسوه و جبل المانع",
+        lat: 33.3600,
+        lng: 36.2400,
+        time: "۳ ساعت و ۳۰ دقیقه پیش",
+        summary: "مقابله پدافند ارتش سوریه با اهداف متخاصم هوایی در آسمان ریف جنوبی دمشق و شنیده شدن صدای چند انفجار پیاپی.",
+        weapon: "سامانه پانتسیر-اس۱ (Pantsir-S1)",
+        source: "خبرگزاری رسمی سانا",
+        isHot: false
+      }
+    ];
+
+    // --- STRATEGIC DEFENSE BUBBLES ---
+    const DEFENSE_BUBBLES = [
+      { name: "چتر پدافندی مرکز ایران (باور-۳۷۳ / اصفهان)", lat: 32.75, lng: 51.86, radius: 260000, color: "#06b6d4" },
+      { name: "چتر پدافندی پایتخت (تهران / صیاد و تورام۱)", lat: 35.68, lng: 51.38, radius: 180000, color: "#10b981" },
+      { name: "چتر پدافندی تنگه هرمز و جنوب", lat: 27.18, lng: 56.27, radius: 220000, color: "#06b6d4" },
+      { name: "چتر پدافندی پیکان ۳ و تاد (اراضی اشغالی)", lat: 31.76, lng: 35.21, radius: 190000, color: "#ef4444" },
+      { name: "منطقه هشدار موشکی و پهپادی دریای سرخ", lat: 14.50, lng: 42.80, radius: 240000, color: "#f97316" }
+    ];
+
+    // --- MISSILE / DRONE TRAJECTORIES ---
+    const TRAJECTORIES = [
+      {
+        name: "کریدور پروازی پهپادهای یمن به سمت جنوب اراضی اشغالی (ایلات)",
+        coords: [[15.35, 44.20], [20.50, 40.10], [25.80, 36.50], [29.55, 34.95]],
+        color: "#f97316"
+      },
+      {
+        name: "مسیر گشت‌زنی شناسایی هوایی و سوخت‌رسانی التنف",
+        coords: [[31.50, 37.00], [33.43, 38.83], [34.50, 41.00]],
+        color: "#eab308"
+      }
+    ];
+
+    // --- APP STATE ---
+    let eventsData = [];
+    let curCategory = "all";
+    let curRegion = "all";
+    let searchQuery = "";
+    let map = null;
+    let markersMap = {};
+    let bubbleLayers = [];
+    let trajectoryLayers = [];
+    let satLayer = null;
+    let baseDarkLayer = null;
+    let showBubbles = true;
+    let showTrajectories = true;
+    let isSatActive = false;
+
+    // --- INITIALIZE MAP ---
+    function initMap() {
+      // Centered on Middle East: Iran, Iraq, Levant, Gulf
+      map = L.map("mapContainer", {
+        center: [31.5, 45.0],
+        zoom: 5.5,
+        zoomControl: false,
+        attributionControl: false
+      });
+
+      // Zoom control in top-right
+      L.control.zoom({ position: "topright" }).addTo(map);
+
+      // 1. Esri Dark Gray Base (Official, clean, high-resolution, no watermark, completely free)
+      baseDarkLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 16,
+        attribution: "Esri, HERE, Garmin, OpenStreetMap"
+      }).addTo(map);
+
+      // 1b. Esri Dark Gray Reference (Labels, borders, place names)
+      window.baseDarkRefLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 16
+      }).addTo(map);
+
+      // 2. Esri Satellite Layer (Optional toggle)
+      satLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 18,
+        attribution: "Esri, Maxar, Earthstar Geographics"
+      });
+
+      // Map move coordinate update
+      map.on("mousemove", (e) => {
+        const hud = document.getElementById("hudCoordsText");
+        if (hud) {
+          hud.textContent = `${e.latlng.lat.toFixed(2)}° N , ${e.latlng.lng.toFixed(2)}° E`;
+        }
+      });
+
+      // Map click handler (for picking coordinates when adding new event)
+      map.on("click", (e) => {
+        const modal = document.getElementById("addEventModal");
+        if (modal && modal.classList.contains("open")) {
+          document.getElementById("newEventLat").value = e.latlng.lat.toFixed(4);
+          document.getElementById("newEventLng").value = e.latlng.lng.toFixed(4);
+          SFX.ping();
+        }
+      });
+
+      renderDefenseBubbles();
+      renderTrajectories();
+    }
+
+    // --- RENDER DEFENSE BUBBLES ---
+    function renderDefenseBubbles() {
+      bubbleLayers.forEach(l => map.removeLayer(l));
+      bubbleLayers = [];
+
+      if (!showBubbles) return;
+
+      DEFENSE_BUBBLES.forEach(b => {
+        const circle = L.circle([b.lat, b.lng], {
+          radius: b.radius,
+          color: b.color,
+          weight: 1.5,
+          opacity: 0.7,
+          dashArray: "6, 6",
+          fillColor: b.color,
+          fillOpacity: 0.08
+        }).addTo(map);
+
+        circle.bindTooltip(`<b>${b.name}</b>`, {
+          direction: "center",
+          className: "defense-tooltip"
+        });
+
+        bubbleLayers.push(circle);
+      });
+    }
+
+    // --- RENDER TRAJECTORIES ---
+    function renderTrajectories() {
+      trajectoryLayers.forEach(l => map.removeLayer(l));
+      trajectoryLayers = [];
+
+      if (!showTrajectories) return;
+
+      TRAJECTORIES.forEach(t => {
+        const polyline = L.polyline(t.coords, {
+          color: t.color,
+          weight: 2.5,
+          opacity: 0.85,
+          dashArray: "8, 8"
+        }).addTo(map);
+
+        polyline.bindTooltip(`<b>${t.name}</b>`, {
+          direction: "top"
+        });
+
+        trajectoryLayers.push(polyline);
+      });
+    }
+
+    // --- RENDER MARKERS ---
+    function renderMarkers() {
+      // Clear existing markers
+      Object.values(markersMap).forEach(m => map.removeLayer(m));
+      markersMap = {};
+
+      const filtered = getFilteredEvents();
+
+      filtered.forEach(evt => {
+        const iconHtml = createMarkerHtml(evt);
+        const customIcon = L.divIcon({
+          html: iconHtml,
+          className: "custom-leaflet-marker",
+          iconSize: [34, 34],
+          iconAnchor: [17, 17],
+          popupAnchor: [0, -18]
+        });
+
+        const marker = L.marker([evt.lat, evt.lng], { icon: customIcon }).addTo(map);
+
+        // Bind rich popup
+        marker.bindPopup(`
+          <div class="popup-brief-header">
+            <span class="event-cat-tag ${evt.severity}">${getCatName(evt.category)}</span>
+            <span class="event-time-tag">⏱️ ${evt.time}</span>
+          </div>
+          <div class="popup-title">${evt.title}</div>
+          <div class="popup-coords">📍 ${evt.location} (${evt.lat.toFixed(3)}°N, ${evt.lng.toFixed(3)}°E)</div>
+          <div class="popup-body">${evt.summary}</div>
+          <div class="popup-source-box">
+            <span>تسلیحات: <b>${evt.weapon || 'نامشخص'}</b></span>
+            <span>منبع: <b>${evt.source}</b></span>
+          </div>
+        `);
+
+        marker.on("click", () => {
+          SFX.ping();
+          highlightSidebarCard(evt.id);
+        });
+
+        markersMap[evt.id] = marker;
+      });
+    }
+
+    function createMarkerHtml(evt) {
+      let iconChar = "🚨";
+      let color = "var(--accent-red)";
+      if (evt.category === "missile") { iconChar = "🚀"; color = "var(--accent-red)"; }
+      else if (evt.category === "airdefense") { iconChar = "🛡️"; color = "var(--accent-cyan)"; }
+      else if (evt.category === "aviation") { iconChar = "✈️"; color = "var(--accent-yellow)"; }
+      else if (evt.category === "naval") { iconChar = "⚓"; color = "var(--accent-purple)"; }
+      else if (evt.category === "alert") { iconChar = "⚠️"; color = "var(--accent-orange)"; }
+
+      const pulseRing = evt.isHot ? `<div class="marker-pulse-ring" style="color:${color};"></div>` : "";
+
+      return `
+        <div class="tactical-marker" style="color:${color};">
+          ${pulseRing}
+          <div class="marker-inner-icon" style="background:${color};">
+            ${iconChar}
+          </div>
+        </div>
+      `;
+    }
+
+    function getCatName(cat) {
+      const map = {
+        missile: "🚀 حمله موشکی/پهپادی",
+        airdefense: "🛡️ پدافند هوایی",
+        aviation: "✈️ پرواز رزمی",
+        naval: "⚓ عملیات دریایی",
+        alert: "🚨 آژیر و وضعیت قرمز"
+      };
+      return map[cat] || "رویداد میدانی";
+    }
+
+    // --- RENDER SIDEBAR FEED ---
+    function renderSidebarFeed() {
+      const container = document.getElementById("eventsFeedList");
+      if (!container) return;
+
+      const filtered = getFilteredEvents();
+      document.getElementById("eventsCountBadge").textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:40px 20px; color:var(--text-dim); font-size:13px;">
+            🔍 هیچ رویدادی با فیلترهای انتخابی یافت نشد.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(evt => {
+        return `
+          <div class="event-card ${evt.severity}" id="card-${evt.id}" onclick="focusOnEvent('${evt.id}')">
+            <div class="event-card-top">
+              <span class="event-cat-tag ${evt.severity}">${getCatName(evt.category)}</span>
+              <span class="event-time-tag">⏱️ ${evt.time}</span>
+            </div>
+            <div class="event-headline">${evt.title}</div>
+            <div class="event-location-row">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span>${evt.location}</span>
+            </div>
+            <div class="event-summary">${evt.summary}</div>
+            <div class="event-card-footer">
+              <span class="weapon-badge">🎯 ${evt.weapon || 'تسلیحات نامشخص'}</span>
+              <button class="focus-map-action">
+                <span>نمایش روی نقشه</span>
+                <span>←</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // --- FILTER LOGIC ---
+    function getFilteredEvents() {
+      return eventsData.filter(evt => {
+        // Category
+        if (curCategory !== "all" && evt.category !== curCategory) return false;
+        // Region
+        if (curRegion !== "all" && evt.region !== curRegion) return false;
+        // Search
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchTitle = evt.title.toLowerCase().includes(q);
+          const matchLoc = evt.location.toLowerCase().includes(q);
+          const matchSum = evt.summary.toLowerCase().includes(q);
+          const matchWeap = (evt.weapon || "").toLowerCase().includes(q);
+          if (!matchTitle && !matchLoc && !matchSum && !matchWeap) return false;
+        }
+        return true;
+      });
+    }
+
+    // --- FOCUS ON EVENT ---
+    function focusOnEvent(id) {
+      const evt = eventsData.find(e => e.id === id);
+      if (!evt) return;
+
+      SFX.ping();
+
+      // Pan & zoom map smoothly
+      map.flyTo([evt.lat, evt.lng], 9, {
+        animate: true,
+        duration: 1.4
+      });
+
+      // Open popup
+      const marker = markersMap[evt.id];
+      if (marker) {
+        setTimeout(() => {
+          marker.openPopup();
+        }, 800);
+      }
+
+      highlightSidebarCard(id);
+
+      // In mobile view: auto-switch to map tab
+      if (window.innerWidth <= 900) {
+        switchMobileTab("map");
+      }
+    }
+
+    function highlightSidebarCard(id) {
+      document.querySelectorAll(".event-card").forEach(c => c.classList.remove("active-target"));
+      const card = document.getElementById(`card-${id}`);
+      if (card) {
+        card.classList.add("active-target");
+        card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    // --- STATS UPDATE ---
+    function updateStats() {
+      const crit = eventsData.filter(e => e.severity === "crit").length;
+      const intercept = eventsData.filter(e => e.category === "airdefense").length;
+      const aviation = eventsData.filter(e => e.category === "aviation").length;
+      
+      document.getElementById("statCritCount").textContent = crit;
+      document.getElementById("statInterceptCount").textContent = intercept;
+      document.getElementById("statSortieCount").textContent = aviation;
+      document.getElementById("statTotal24h").textContent = eventsData.length;
+    }
+
+    // --- HUD CLOCKS ---
+    function updateClocks() {
+      const now = new Date();
+
+      // Tehran: UTC+3:30
+      const tehranStr = new Intl.DateTimeFormat("fa-IR", {
+        timeZone: "Asia/Tehran",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(now);
+
+      // Jerusalem/Beirut: UTC+2 or UTC+3
+      const jerusalemStr = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Jerusalem",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(now);
+
+      // UTC
+      const utcStr = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "UTC",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(now);
+
+      const elT = document.getElementById("clockTehran");
+      const elJ = document.getElementById("clockJerusalem");
+      const elU = document.getElementById("clockUtc");
+
+      if (elT) elT.textContent = tehranStr;
+      if (elJ) elJ.textContent = jerusalemStr;
+      if (elU) elU.textContent = utcStr;
+    }
+
+    // --- MOBILE TABS SWITCHER ---
+    function switchMobileTab(tab) {
+      const mapBox = document.getElementById("mapContainer");
+      const sideBox = document.getElementById("sidebarFeed");
+      const btnMap = document.getElementById("mobileTabMap");
+      const btnFeed = document.getElementById("mobileTabFeed");
+
+      if (tab === "map") {
+        mapBox.classList.remove("mobile-hidden");
+        sideBox.classList.remove("mobile-visible");
+        btnMap.classList.add("active");
+        btnFeed.classList.remove("active");
+        setTimeout(() => map.invalidateSize(), 200);
+      } else {
+        mapBox.classList.add("mobile-hidden");
+        sideBox.classList.add("mobile-visible");
+        btnMap.classList.remove("active");
+        btnFeed.classList.add("active");
+      }
+    }
+
+    // --- DATA PERSISTENCE ---
+    function loadSavedEvents() {
+      try {
+        const raw = localStorage.getItem("me_osint_events");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch (e) {}
+      return DEFAULT_EVENTS;
+    }
+
+    function saveEventsLocally() {
+      try {
+        localStorage.setItem("me_osint_events", JSON.stringify(eventsData));
+      } catch (e) {}
+    }
+
+    // --- INIT APP ---
+    document.addEventListener("DOMContentLoaded", () => {
+      eventsData = loadSavedEvents();
+
+      initMap();
+      renderMarkers();
+      renderSidebarFeed();
+      updateStats();
+
+      // Clocks loop
+      updateClocks();
+      setInterval(updateClocks, 1000);
+
+      // Category filters
+      document.querySelectorAll(".cat-pill").forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll(".cat-pill").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          curCategory = btn.dataset.cat;
+          SFX.ping();
+          renderMarkers();
+          renderSidebarFeed();
+        };
+      });
+
+      // Region filters
+      document.querySelectorAll(".region-pill").forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll(".region-pill").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          curRegion = btn.dataset.region;
+          SFX.ping();
+          renderMarkers();
+          renderSidebarFeed();
+        };
+      });
+
+      // Search input
+      const searchInp = document.getElementById("osintSearchInput");
+      if (searchInp) {
+        searchInp.oninput = (e) => {
+          searchQuery = e.target.value.trim();
+          renderMarkers();
+          renderSidebarFeed();
+        };
+      }
+
+      // Quick layer toggles
+      document.getElementById("toggleDefenseBubblesBtn").onclick = function() {
+        showBubbles = !showBubbles;
+        this.classList.toggle("active", showBubbles);
+        renderDefenseBubbles();
+        SFX.ping();
+      };
+
+      document.getElementById("toggleTrajectoriesBtn").onclick = function() {
+        showTrajectories = !showTrajectories;
+        this.classList.toggle("active", showTrajectories);
+        renderTrajectories();
+        SFX.ping();
+      };
+
+      document.getElementById("toggleSatLayerBtn").onclick = function() {
+        isSatActive = !isSatActive;
+        this.classList.toggle("active", isSatActive);
+        if (isSatActive) {
+          map.removeLayer(baseDarkLayer);
+          if (window.baseDarkRefLayer) map.removeLayer(window.baseDarkRefLayer);
+          satLayer.addTo(map);
+        } else {
+          map.removeLayer(satLayer);
+          baseDarkLayer.addTo(map);
+          if (window.baseDarkRefLayer) window.baseDarkRefLayer.addTo(map);
+        }
+        SFX.ping();
+      };
+
+      // Reset view button
+      document.getElementById("resetViewBtn").onclick = () => {
+        map.flyTo([31.5, 45.0], 5.5, { duration: 1.2 });
+        SFX.ping();
+      };
+
+      // Sound toggle
+      document.getElementById("sfxToggleBtn").onclick = function() {
+        soundEnabled = !soundEnabled;
+        document.getElementById("sfxIcon").textContent = soundEnabled ? "🔊" : "🔇";
+        if (soundEnabled) SFX.ping();
+      };
+
+      // Refresh button
+      document.getElementById("refreshFeedBtn").onclick = () => {
+        SFX.ping();
+        renderMarkers();
+        renderSidebarFeed();
+        updateStats();
+      };
+
+      // Mobile tabs
+      document.getElementById("mobileTabMap").onclick = () => switchMobileTab("map");
+      document.getElementById("mobileTabFeed").onclick = () => switchMobileTab("feed");
+
+      // MODAL CONTROLS
+      const modal = document.getElementById("addEventModal");
+      document.getElementById("openAddModalBtn").onclick = () => {
+        modal.classList.add("open");
+        SFX.ping();
+      };
+      document.getElementById("closeModalBtn").onclick = () => modal.classList.remove("open");
+      document.getElementById("cancelModalBtn").onclick = () => modal.classList.remove("open");
+
+      // SAVE NEW EVENT
+      document.getElementById("saveEventBtn").onclick = () => {
+        const title = document.getElementById("newEventTitle").value.trim();
+        const category = document.getElementById("newEventCategory").value;
+        const severity = document.getElementById("newEventSeverity").value;
+        const region = document.getElementById("newEventRegion").value;
+        const locationName = document.getElementById("newEventLocationName").value.trim();
+        const lat = parseFloat(document.getElementById("newEventLat").value);
+        const lng = parseFloat(document.getElementById("newEventLng").value);
+        const summary = document.getElementById("newEventSummary").value.trim();
+        const weapon = document.getElementById("newEventWeapon").value.trim();
+        const source = document.getElementById("newEventSource").value.trim();
+
+        if (!title) {
+          alert("لطفاً عنوان رویداد را وارد فرمایید.");
+          return;
+        }
+        if (isNaN(lat) || isNaN(lng)) {
+          alert("لطفاً مختصات جغرافیایی (عرض و طول جغرافیایی) معتبر وارد کنید یا روی نقشه کلیک نمایید.");
+          return;
+        }
+
+        const newEvt = {
+          id: `evt-${Date.now()}`,
+          title,
+          category,
+          severity,
+          region,
+          location: locationName || "منطقه نامشخص",
+          lat,
+          lng,
+          time: "هم‌اکنون",
+          summary: summary || "گزارش در دست بررسی توسط واحدهای دیده‌بان...",
+          weapon: weapon || "نامشخص",
+          source: source || "گزارش ثبت‌شده توسط اپراتور",
+          isHot: true
+        };
+
+        eventsData.unshift(newEvt);
+        saveEventsLocally();
+
+        modal.classList.remove("open");
+        SFX.alert();
+
+        // Reset form
+        document.getElementById("newEventTitle").value = "";
+        document.getElementById("newEventLocationName").value = "";
+        document.getElementById("newEventLat").value = "";
+        document.getElementById("newEventLng").value = "";
+        document.getElementById("newEventSummary").value = "";
+
+        renderMarkers();
+        renderSidebarFeed();
+        updateStats();
+
+        // Focus on newly added event!
+        focusOnEvent(newEvt.id);
+      };
+    });
+  </script>
+</body>
+</html>
