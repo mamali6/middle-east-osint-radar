@@ -1143,9 +1143,339 @@
 
       .mobile-view-tabs { display: flex; bottom: 14px; }
     }
-  </style>
+  
+    /* --- RED ALERT MODE --- */
+    .red-alert-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2500;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      box-shadow: inset 0 0 100px rgba(239, 68, 68, 0.6), inset 0 0 40px rgba(239, 68, 68, 0.4);
+    }
+    body.red-alert-active .red-alert-vignette {
+      opacity: 1;
+      animation: alertPulse 1.6s infinite alternate ease-in-out;
+    }
+    @keyframes alertPulse {
+      0% { box-shadow: inset 0 0 60px rgba(239, 68, 68, 0.35); }
+      100% { box-shadow: inset 0 0 140px rgba(239, 68, 68, 0.85), inset 0 0 50px rgba(220, 38, 38, 0.6); }
+    }
+    .hud-btn.alert-toggle-btn {
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #ef4444;
+    }
+    .hud-btn.alert-toggle-btn.active {
+      background: #ef4444;
+      color: #000;
+      font-weight: 800;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
+      animation: btnPulse 1s infinite alternate;
+    }
+    @keyframes btnPulse {
+      0% { opacity: 0.85; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+      100% { opacity: 1; box-shadow: 0 0 20px rgba(239, 68, 68, 0.9); }
+    }
+
+    /* --- BALLISTIC CALCULATOR DOCK --- */
+    .ballistic-dock {
+      display: none;
+      position: fixed;
+      top: 68px;
+      left: 18px;
+      z-index: 2200;
+      width: 380px;
+      max-width: calc(100vw - 28px);
+      background: rgba(10, 15, 26, 0.95);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 12px;
+      padding: 14px;
+      z-index: 1000;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8), 0 0 20px var(--accent-cyan-glow);
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ballistic-dock.open { display: flex; }
+    .calc-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+    }
+    .calc-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .calc-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .calc-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .calc-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .calc-select {
+      background: var(--bg-dark);
+      border: 1px solid var(--bg-surface-border);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 11.5px;
+      padding: 6px 8px;
+      font-family: var(--font-fa);
+      outline: none;
+    }
+    .calc-select:focus { border-color: var(--accent-cyan); }
+    .calc-results-box {
+      background: rgba(6, 182, 212, 0.05);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .calc-res-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+    }
+    .calc-res-label { color: var(--text-muted); }
+    .calc-res-val { font-weight: 700; color: #fff; }
+    .calc-res-val.highlight { color: #f59e0b; font-family: monospace; }
+    .calc-res-val.cyan { color: var(--accent-cyan); font-family: monospace; }
+    .calc-res-val.red { color: #ef4444; font-family: monospace; }
+    .calc-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .calc-btn-exec {
+      flex: 1;
+      background: var(--accent-cyan);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      padding: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .calc-btn-clear {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--bg-surface-border);
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* --- ANALYTICS MODAL DRAWER --- */
+    .analytics-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(10px);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .analytics-modal-backdrop.open { display: flex; }
+    .analytics-modal-card {
+      background: #0b111e;
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9), 0 0 25px rgba(6, 182, 212, 0.25);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 820px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .analytics-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .analytics-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .analytics-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .analytics-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 700px) {
+      .analytics-grid-2 { grid-template-columns: 1fr; }
+    }
+    .analytics-card-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--bg-surface-border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .panel-hdr {
+      font-size: 12px;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .meter-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 10px 0;
+    }
+    .meter-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(#ef4444 0% 78%, rgba(255, 255, 255, 0.06) 78% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .meter-inner {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: #0b111e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .meter-val { font-size: 20px; font-weight: 900; color: #ef4444; font-family: monospace; }
+    .meter-sub { font-size: 9px; color: #94a3b8; }
+    .meter-desc { display: flex; flex-direction: column; gap: 4px; }
+    .meter-desc-title { font-size: 13px; font-weight: 800; color: #ef4444; }
+    .meter-desc-text { font-size: 11px; color: #94a3b8; line-height: 1.6; }
+
+    /* Progress bars for weapons */
+    .prog-row { display: flex; flex-direction: column; gap: 4px; }
+    .prog-top { display: flex; justify-content: space-between; font-size: 11px; }
+    .prog-bar-bg { height: 6px; background: rgba(255, 255, 255, 0.06); border-radius: 3px; overflow: hidden; }
+    .prog-bar-fill { height: 100%; border-radius: 3px; }
+
+    /* SVG Chart */
+    .chart-container { width: 100%; height: 140px; position: relative; }
+
+    /* --- NAVAL & STRATEGIC ICONS --- */
+    .warship-marker {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s ease;
+    }
+    .warship-marker:hover { transform: scale(1.15); }
+    .warship-icon-svg {
+      filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
+    }
+    .warship-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(10, 15, 26, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 1px 4px;
+      border-radius: 3px;
+      white-space: nowrap;
+      margin-top: 2px;
+      font-family: monospace;
+    }
+
+    .strat-site-marker {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s ease;
+    }
+    .strat-site-marker:hover { transform: scale(1.2); }
+    .strat-site-glyph {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    }
+    .strat-site-glyph.nuclear {
+      background: rgba(217, 70, 239, 0.25);
+      border: 1px solid #d946ef;
+      box-shadow: 0 0 8px rgba(217, 70, 239, 0.6);
+    }
+    .strat-site-glyph.airbase {
+      background: rgba(6, 182, 212, 0.25);
+      border: 1px solid #06b6d4;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
+    }
+    .strat-site-glyph.energy {
+      background: rgba(245, 158, 11, 0.25);
+      border: 1px solid #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+    }
+    .strat-site-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      background: rgba(10, 15, 26, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+</style>
 </head>
 <body>
+  <div class="red-alert-vignette" id="redAlertVignette"></div>
+
 
   <!-- 1. TOP COMMAND BAR -->
   <header class="command-header">
@@ -1195,6 +1525,15 @@
     <div class="header-actions">
       <button class="hud-btn" id="sfxToggleBtn" title="تنظیم صدا">
         <span id="sfxIcon">🔊</span>
+      </button>
+      <button class="hud-btn alert-toggle-btn" id="toggleRedAlertBtn" title="شبیه‌ساز وضعیت قرمز و آژیر جنگی">
+        <span>🚨</span><span class="btn-label"> وضعیت قرمز</span>
+      </button>
+      <button class="hud-btn" id="toggleBallisticCalcBtn" title="خط‌کش و محاسبه‌گر بالستیک">
+        <span>📐</span><span class="btn-label"> خط‌کش بالستیک</span>
+      </button>
+      <button class="hud-btn" id="toggleAnalyticsBtn" title="تحلیل تنش و نمودارها">
+        <span>📊</span><span class="btn-label"> تحلیل تنش</span>
       </button>
       <button class="hud-btn" id="toggleTimelineBtn" title="ماشین زمان رویدادها">
         <span>⏳</span><span class="btn-label"> ماشین زمان</span>
@@ -1335,6 +1674,12 @@
         <button class="toggle-chip" id="toggleHeatmapBtn">
           <span>🌡️ نقشه حرارتی</span>
         </button>
+        <button class="toggle-chip active" id="toggleNavalFleetBtn">
+          <span>🚢 ناوگان دریایی (AIS)</span>
+        </button>
+        <button class="toggle-chip active" id="toggleStrategicSitesBtn">
+          <span>⚛️ تاسیسات استراتژیک</span>
+        </button>
         <button class="toggle-chip" id="toggleSatLayerBtn">
           <span>🛰️ تصویر ماهواره‌ای</span>
         </button>
@@ -1350,6 +1695,166 @@
     <button class="mobile-tab-btn" id="mobileTabFeed">
       <span>📰 اخبار و فید</span>
     </button>
+  </div>
+
+
+  <!-- BALLISTIC MISSILE RANGE CALCULATOR DOCK -->
+  <div class="ballistic-dock" id="ballisticDock">
+    <div class="calc-head">
+      <div class="calc-title">
+        <span>📐 خط‌کش بالستیک و محاسبه‌گر زمان پرواز</span>
+      </div>
+      <button class="calc-close-btn" id="closeBallisticDockBtn">✕</button>
+    </div>
+    <div class="calc-row">
+      <label class="calc-label">مبدا شلیک / پایگاه پرتاب:</label>
+      <select class="calc-select" id="calcLaunchSelect">
+        <option value="kermanshah">🚀 پایگاه موشکی کرمانشاه (غرب ایران)</option>
+        <option value="tabriz">🚀 پایگاه موشکی تبریز (شمال‌غرب ایران)</option>
+        <option value="isfahan">🚀 پایگاه موشکی اصفهان / کاشان (مرکز ایران)</option>
+        <option value="shiraz">🚀 پایگاه موشکی شیراز (جنوب ایران)</option>
+        <option value="yemen">🚀 پایگاه موشکی صعده / صنعا (انصارالله یمن)</option>
+      </select>
+    </div>
+    <div class="calc-row">
+      <label class="calc-label">هدف عملیاتی / منطقه اصابت:</label>
+      <select class="calc-select" id="calcTargetSelect">
+        <option value="nevatim">🎯 پایگاه هوایی استراتژیک نواتیم (نقب)</option>
+        <option value="telaviv">🎯 منطقه مقر وزارت جنگ و تل‌آویو (مرکز)</option>
+        <option value="ramatdavid">🎯 پایگاه هوایی رمات دیوید (شمال)</option>
+        <option value="dimona">🎯 مجتمع هسته‌ای دیمونا</option>
+        <option value="carrier">🎯 ناو هواپیمابر آبراهام لینکلن (دریای عمان)</option>
+      </select>
+    </div>
+    <div class="calc-actions">
+      <button class="calc-btn-exec" id="executeCalcBtn">⚡ ترسیم خط سیر بالستیک و محاسبه</button>
+      <button class="calc-btn-clear" id="clearCalcBtn">✕ پاک‌سازی</button>
+    </div>
+    <div class="calc-results-box" id="calcResultsBox">
+      <div class="calc-res-item">
+        <span class="calc-res-label">📏 فاصله خط مستقیم:</span>
+        <span class="calc-res-val highlight" id="calcDistVal">1,280 km (691 NM)</span>
+      </div>
+      <div class="calc-res-item">
+        <span class="calc-res-label">🚀 هایپرسونیک فتاح / خیبرشکن (ماخ ۸):</span>
+        <span class="calc-res-val cyan" id="calcHypersonicVal">~ ۷ دقیقه و ۵۰ ثانیه</span>
+      </div>
+      <div class="calc-res-item">
+        <span class="calc-res-label">🚀 بالستیک میان‌برد (ماخ ۶ متوسط):</span>
+        <span class="calc-res-val cyan" id="calcBallisticVal">~ ۱۰ دقیقه و ۲۵ ثانیه</span>
+      </div>
+      <div class="calc-res-item">
+        <span class="calc-res-label">🚀 موشک کروز نقطه‌زن (پاوه - 800 km/h):</span>
+        <span class="calc-res-val cyan" id="calcCruiseVal">~ ۱ ساعت و ۳۶ دقیقه</span>
+      </div>
+      <div class="calc-res-item">
+        <span class="calc-res-label">🛸 پهپاد انتحاری شاهد ۱۳۶ (185 km/h):</span>
+        <span class="calc-res-val red" id="calcDroneVal">~ ۶ ساعت و ۵۵ دقیقه</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREAT ANALYTICS MODAL DRAWER -->
+  <div class="analytics-modal-backdrop" id="analyticsModal">
+    <div class="analytics-modal-card">
+      <div class="analytics-head">
+        <div class="analytics-title">
+          <span>📊 داشبورد تحلیلی و موازنه تنش ژئوپلیتیک</span>
+        </div>
+        <button class="calc-close-btn" id="closeAnalyticsModalBtn">✕</button>
+      </div>
+      <div class="analytics-body">
+        <div class="analytics-grid-2">
+          <!-- DEFCON GAUGE -->
+          <div class="analytics-card-panel">
+            <div class="panel-hdr">
+              <span>شاخص تشدید تنش منطقه‌ای (Defcon Index)</span>
+              <span style="color:#ef4444; font-weight:800;">بحرانی (سطح ۲)</span>
+            </div>
+            <div class="meter-display">
+              <div class="meter-circle">
+                <div class="meter-inner">
+                  <span class="meter-val">۷۸</span>
+                  <span class="meter-sub">از ۱۰۰</span>
+                </div>
+              </div>
+              <div class="meter-desc">
+                <span class="meter-desc-title">وضعیت قرمز تاکتیکی</span>
+                <span class="meter-desc-text">افزایش ۲۴ درصدی تبادل آتش در جبهه شمال و شدت مانورهای پدافند هوایی در ۲۴ ساعت گذشته.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- WEAPON BREAKDOWN -->
+          <div class="analytics-card-panel">
+            <div class="panel-hdr">
+              <span>توزیع تسلیحات و تاکتیک‌ها در حملات اخیر</span>
+              <span style="color:#06b6d4;">۲۴h گذشته</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
+              <div class="prog-row">
+                <div class="prog-top"><span>🛸 پهپادهای انتحاری و شناسایی</span><span style="color:#f59e0b; font-family:monospace;">۴۲٪</span></div>
+                <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:42%; background:#f59e0b;"></div></div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-top"><span>🚀 موشک‌های بالستیک و کروز</span><span style="color:#ef4444; font-family:monospace;">۲۸٪</span></div>
+                <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:28%; background:#ef4444;"></div></div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-top"><span>🛡️ آتشبارهای پدافندی درگیر</span><span style="color:#06b6d4; font-family:monospace;">۱۸٪</span></div>
+                <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:18%; background:#06b6d4;"></div></div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-top"><span>✈️ سورتی پروازهای رزمی</span><span style="color:#10b981; font-family:monospace;">۱۲٪</span></div>
+                <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:12%; background:#10b981;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-DAY TREND CHART -->
+        <div class="analytics-card-panel">
+          <div class="panel-hdr">
+            <span>📈 روند ۷ روزه شدت درگیری‌ها و شلیک‌ها</span>
+            <span style="color:#94a3b8; font-size:11px;">تعداد کل رخدادها: ۵۴ عملیات</span>
+          </div>
+          <div class="chart-container">
+            <svg viewBox="0 0 700 130" style="width:100%; height:100%; overflow:visible;">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+              <!-- Grid lines -->
+              <line x1="40" y1="20" x2="680" y2="20" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"/>
+              <line x1="40" y1="60" x2="680" y2="60" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"/>
+              <line x1="40" y1="100" x2="680" y2="100" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"/>
+              <!-- Area -->
+              <path d="M 50,95 L 140,80 L 230,85 L 320,60 L 410,45 L 500,55 L 650,25 L 650,110 L 50,110 Z" fill="url(#chartGrad)"/>
+              <!-- Line -->
+              <path d="M 50,95 L 140,80 L 230,85 L 320,60 L 410,45 L 500,55 L 650,25" fill="none" stroke="#06b6d4" stroke-width="3" stroke-linecap="round"/>
+              <!-- Nodes -->
+              <circle cx="50" cy="95" r="4" fill="#06b6d4"/>
+              <circle cx="140" cy="80" r="4" fill="#06b6d4"/>
+              <circle cx="230" cy="85" r="4" fill="#06b6d4"/>
+              <circle cx="320" cy="60" r="4" fill="#06b6d4"/>
+              <circle cx="410" cy="45" r="4" fill="#06b6d4"/>
+              <circle cx="500" cy="55" r="4" fill="#06b6d4"/>
+              <circle cx="650" cy="25" r="6" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+              <!-- Labels -->
+              <text x="50" y="125" fill="#64748b" font-size="10" text-anchor="middle">۶ روز قبل</text>
+              <text x="140" y="125" fill="#64748b" font-size="10" text-anchor="middle">۵ روز قبل</text>
+              <text x="230" y="125" fill="#64748b" font-size="10" text-anchor="middle">۴ روز قبل</text>
+              <text x="320" y="125" fill="#64748b" font-size="10" text-anchor="middle">۳ روز قبل</text>
+              <text x="410" y="125" fill="#64748b" font-size="10" text-anchor="middle">پریروز</text>
+              <text x="500" y="125" fill="#64748b" font-size="10" text-anchor="middle">دیروز</text>
+              <text x="650" y="125" fill="#ef4444" font-weight="700" font-size="10" text-anchor="middle">امروز (اوج تنش)</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ADD EVENT MODAL -->
@@ -2384,6 +2889,488 @@
       ctx.fillText(line, x, y);
     }
 
+
+    // ==========================================
+    // MODULE 1: NAVAL FLEET AIS LAYER (5 WARSHIPS)
+    // ==========================================
+    let showNavalFleet = true;
+    let navalMarkers = []; window.navalMarkers = navalMarkers;
+    const navalFleetData = [
+      {
+        id: "us-lincoln",
+        name: "ناو هواپیمابر USS Abraham Lincoln (CVN-72)",
+        callsign: "LINCOLN-01",
+        flag: "🇺🇸",
+        type: "هواپیمابر هسته‌ای رده نیمیتز",
+        country: "نیروی دریایی ایالات متحده",
+        lat: 23.85, lng: 59.80, heading: 135, speed: 24,
+        displacement: "104,200 تن",
+        defense: "Aegis BMD, RIM-162 ESSM, سامانه فالانکس",
+        aircraft: "F-35C, F/A-18E/F Super Hornet, E-2D Hawkeye",
+        mission: "گشت رزمی و اسکورت هوایی در دریای عمان / اقیانوس هند",
+        route: [[23.85, 59.80], [23.50, 60.30], [23.10, 60.90], [23.40, 60.50], [23.85, 59.80]]
+      },
+      {
+        id: "iri-jamaran",
+        name: "ناوشکن جماران (IRIS Jamaran 76)",
+        callsign: "IRIS-76",
+        flag: "🇮🇷",
+        type: "ناوشکن موشک‌انداز رده موج",
+        country: "نیروی دریایی ارتش جمهوری اسلامی",
+        lat: 26.20, lng: 56.40, heading: 270, speed: 18,
+        displacement: "1,500 تن",
+        defense: "موشک‌های کروز ضدکشتی قادر و نور، پدافند هوایی محراب",
+        aircraft: "بالگرد Bell 212 ضدزیردریایی",
+        mission: "گشت‌زنی امنیتی و کنترل ترافیک دریایی تنگه هرمز",
+        route: [[26.20, 56.40], [26.35, 56.10], [26.45, 55.70], [26.30, 56.00], [26.20, 56.40]]
+      },
+      {
+        id: "iri-mahdavi",
+        name: "ناو اقیانوس‌پیمای شهید مهدوی (IRGCN 110-1)",
+        callsign: "MAHDAVI-110",
+        flag: "🇮🇷",
+        type: "پایگاه شناور لجستیکی و رزمی",
+        country: "نیروی دریایی سپاه پاسداران",
+        lat: 21.50, lng: 62.00, heading: 60, speed: 14,
+        displacement: "42,000 تن",
+        defense: "پرتابگر بالستیک دزفول و فتح ۳۶۰، پدافند نواب و کوثر",
+        aircraft: "پهپادهای شناسایی و انتحاری ابابیل و شاهد",
+        mission: "حضور راهبردی و اشراف اطلاعاتی در شمال اقیانوس هند",
+        route: [[21.50, 62.00], [21.80, 62.60], [22.10, 63.10], [21.80, 62.50], [21.50, 62.00]]
+      },
+      {
+        id: "isr-magen",
+        name: "ناوچه ساعر ۶ مگن (INS Magen)",
+        callsign: "MAGEN-01",
+        flag: "🇮🇱",
+        type: "ناوچه سبک رادارگریز Sa'ar 6",
+        country: "نیروی دریایی اسرائیل",
+        lat: 32.90, lng: 34.65, heading: 340, speed: 21,
+        displacement: "1,900 تن",
+        defense: "گنبد آهنین دریایی (C-Dome)، موشک‌های پدافند باراک ۸",
+        aircraft: "بالگرد دریایی SH-60 Seahawk",
+        mission: "حفاظت از سکوهای گازی لویاتان و تمار و حریم دریایی حیفا",
+        route: [[32.90, 34.65], [33.15, 34.75], [33.40, 34.80], [33.10, 34.70], [32.90, 34.65]]
+      },
+      {
+        id: "red-sea-convoy",
+        name: "کاروان نفتکش‌ها با اسکورت ناوشکن ائتلاف",
+        callsign: "CONVOY-DELTA",
+        flag: "⚓",
+        type: "کاروان تجاری تحت اسکورت رزمی",
+        country: "ائتلاف بین‌المللی دریایی دریای سرخ",
+        lat: 12.85, lng: 43.35, heading: 320, speed: 13,
+        displacement: "180,000+ تن مجموع",
+        defense: "چتر پدافندی ناوشکن Arleigh Burke مجهز به سامانه SM-2 و SM-6",
+        aircraft: "پهپاد شناسایی MQ-9 Reaper",
+        mission: "اسکورت کشتی‌های تجاری در برابر پهپادها در دهانه باب‌المندب",
+        route: [[12.85, 43.35], [13.20, 43.10], [13.70, 42.80], [13.30, 43.00], [12.85, 43.35]]
+      }
+    ];
+
+    function createWarshipIcon(heading, name, callsign) {
+      const svg = `
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" class="warship-icon-svg" style="transform: rotate(${heading}deg);">
+          <!-- Ship Hull -->
+          <path d="M14 2 L22 10 L20 24 L8 24 L6 10 Z" fill="#0369a1" stroke="#38bdf8" stroke-width="1.8"/>
+          <!-- Deckhouse & Radar -->
+          <rect x="11" y="9" width="6" height="8" rx="1.5" fill="#0ea5e9" stroke="#fff" stroke-width="0.8"/>
+          <line x1="14" y1="5" x2="14" y2="9" stroke="#f59e0b" stroke-width="1.5"/>
+          <circle cx="14" cy="5" r="1.5" fill="#f59e0b"/>
+          <!-- Wake glow -->
+          <path d="M8 24 L14 27 L20 24" stroke="rgba(56, 189, 248, 0.6)" stroke-width="1.5" fill="none"/>
+        </svg>
+      `;
+      return L.divIcon({
+        className: "warship-div-icon",
+        html: `
+          <div class="warship-marker">
+            ${svg}
+            <div class="warship-label">⚓ ${callsign}</div>
+          </div>
+        `,
+        iconSize: [28, 44],
+        iconAnchor: [14, 22]
+      });
+    }
+
+    function initNavalFleet() {
+      navalFleetData.forEach((ship, idx) => {
+        ship.step = idx * 5;
+        const icon = createWarshipIcon(ship.heading, ship.name, ship.callsign);
+        const marker = L.marker([ship.lat, ship.lng], { icon }).addTo(map);
+
+        marker.bindPopup(`
+          <div class="popup-title">⚓ ${ship.flag} ${ship.name}</div>
+          <div class="popup-body">
+            <b>کد تماس / شناسه:</b> ${ship.callsign}<br>
+            <b>رده شناور:</b> ${ship.type}<br>
+            <b>سازمان / کشور:</b> ${ship.country}<br>
+            <b>سرعت لحظه‌ای:</b> ${ship.speed} گره دریایی (Knots)<br>
+            <b>وزن تناژ:</b> ${ship.displacement}<br>
+            <b>تسلیحات و پدافند:</b> ${ship.defense}<br>
+            <b>هواناو و پهپاد:</b> ${ship.aircraft}<br>
+            <b>ماموریت جاری:</b> ${ship.mission}
+          </div>
+          <div class="popup-source-box">
+            <span>سیستم: <b>رادار AIS ماهواره‌ای</b></span>
+            <span>وضعیت: <b>شناور عملیاتی</b></span>
+          </div>
+        `);
+
+        marker.on("click", () => SFX.ping());
+        navalMarkers.push({ marker, ship });
+      });
+
+      // Animate movement every 2 seconds
+      setInterval(updateNavalFleetPositions, 2000);
+    }
+
+    function updateNavalFleetPositions() {
+      if (!showNavalFleet) return;
+      navalMarkers.forEach(({ marker, ship }) => {
+        ship.step = (ship.step + 1) % 100;
+        const totalWaypoints = ship.route.length;
+        const progress = (ship.step / 100) * (totalWaypoints - 1);
+        const currIndex = Math.floor(progress);
+        const nextIndex = (currIndex + 1) % totalWaypoints;
+        const t = progress - currIndex;
+
+        const p1 = ship.route[currIndex];
+        const p2 = ship.route[nextIndex];
+
+        const newLat = p1[0] + (p2[0] - p1[0]) * t;
+        const newLng = p1[1] + (p2[1] - p1[1]) * t;
+
+        // Calculate heading
+        const dLat = p2[0] - p1[0];
+        const dLng = p2[1] - p1[1];
+        const angleDeg = (Math.atan2(dLng, dLat) * 180 / Math.PI + 360) % 360;
+        ship.heading = Math.round(angleDeg);
+
+        marker.setLatLng([newLat, newLng]);
+        marker.setIcon(createWarshipIcon(ship.heading, ship.name, ship.callsign));
+      });
+    }
+
+    // ==========================================
+    // MODULE 2: STRATEGIC & NUCLEAR SITES (14 SITES)
+    // ==========================================
+    let showStrategicSites = true;
+    let stratMarkers = []; window.stratMarkers = stratMarkers;
+    const strategicSitesData = [
+      // Nuclear Sites
+      { id: "natanz", name: "مجتمع هسته‌ای نطنز (شهید احمدی روشن)", type: "nuclear", lat: 33.72, lng: 51.73, desc: "مرکز اصلی غنی‌سازی اورانیوم ایران؛ سالن‌های سانتریفیوژ در عمق زمین با حفاظت پدافند چندلایه باور-۳۷۳ و تور-ام۱." },
+      { id: "fordow", name: "تاسیسات غنی‌سازی فردو (شهید علی‌محمدی)", type: "nuclear", lat: 34.88, lng: 50.99, desc: "مرکز غنی‌سازی فوق‌مستحکم در عمق کوه‌های قم جهت غنی‌سازی ۶۰٪ با پوشش سامانه‌های ضد موشک سنگین." },
+      { id: "arak", name: "راکتور آب سنگین خنداب (اراک)", type: "nuclear", lat: 34.37, lng: 49.24, desc: "تاسیسات هسته‌ای آب سنگین با محافظت پدافند هوایی ارتفاع متوسط سوم خرداد." },
+      { id: "bushehr", name: "نیروگاه اتمی بوشهر", type: "nuclear", lat: 28.83, lng: 50.88, desc: "نیروگاه تولید برق هسته‌ای ۱۰۰۰ مگاواتی در ساحل خلیج‌فارس تحت پوشش اس-۳۰۰ پی‌ام‌یو۲." },
+      { id: "dimona", name: "مرکز تحقیقات هسته‌ای دیمونا (اسرائیل)", type: "nuclear", lat: 31.00, lng: 35.14, desc: "تاسیسات تولید پلوتونیوم و کلاهک‌های اتمی در صحرای نقب تحت حفاظت پاتریوت و پیکان ۳." },
+      // Airbases
+      { id: "isfahan-ab", name: "پایگاه هشتم شکاری شهید بابایی اصفهان", type: "airbase", lat: 32.75, lng: 51.86, desc: "مقر اصلی جنگنده‌های F-14 تامکت و آتشبارهای پدافندی راهبردی باور-۳۷۳." },
+      { id: "nevatim", name: "پایگاه هوایی استراتژیک نواتیم (Nevatim AB)", type: "airbase", lat: 31.20, lng: 35.01, desc: "مقر اسکادران‌های جنگنده‌های نسل پنجم F-35I آدیر و آشیانه‌های بتنی زیرزمینی." },
+      { id: "ramat-david", name: "پایگاه هوایی رمات دیوید (شمال اسرائیل)", type: "airbase", lat: 32.66, lng: 35.18, desc: "پایگاه اصلی اسکادران‌های جنگنده‌های F-16 فالکون در جبهه شمالی." },
+      { id: "al-tanf", name: "پایگاه نظامی التنف (مثلث مرزی سوریه)", type: "airbase", lat: 33.42, lng: 38.68, desc: "پایگاه استراتژیک نیروهای ائتلاف آمریکایی در گذرگاه مرزی سوریه، اردن و عراق." },
+      { id: "ain-asad", name: "پایگاه هوایی عین‌الاسد (الانبار عراق)", type: "airbase", lat: 33.78, lng: 42.43, desc: "پایگاه بزرگ میزبان نیروها و پهپادهای شناسایی ارتش آمریکا در غرب عراق." },
+      // Energy & Ports
+      { id: "kharg", name: "پایانه نفتی جزیره خارک", type: "energy", lat: 29.24, lng: 50.32, desc: "شاهرگ صادرات نفت خام ایران در خلیج‌فارس با رادارهای مراقبت ساحلی پیشرفته." },
+      { id: "ras-tanura", name: "پایانه نفتی راس تنوره (آرامکو سعودی)", type: "energy", lat: 26.64, lng: 50.16, desc: "بزرگترین پایانه بارگیری نفت خام جهان با حریم حفاظت هوایی سخت‌گیرانه." },
+      { id: "haifa-ref", name: "پالایشگاه و بنادر استراتژیک حیفا", type: "energy", lat: 32.80, lng: 35.03, desc: "شریان سوخت، پتروشیمی و بندرگاه اصلی تدارکات دریایی اسرائیل در مدیترانه." },
+      { id: "eilat-port", name: "بندر استراتژیک ایلات (خلیج عقبه)", type: "energy", lat: 29.53, lng: 34.95, desc: "دروازه بازرگانی دریایی اسرائیل به دریای سرخ، هدف اصلی حملات پهپادی انصارالله." }
+    ];
+
+    function createStratIcon(site) {
+      let glyph = "⚛️";
+      let glyphClass = "nuclear";
+      if (site.type === "airbase") { glyph = "🛫"; glyphClass = "airbase"; }
+      else if (site.type === "energy") { glyph = "🛢️"; glyphClass = "energy"; }
+
+      return L.divIcon({
+        className: "strat-site-div-icon",
+        html: `
+          <div class="strat-site-marker">
+            <div class="strat-site-glyph ${glyphClass}">${glyph}</div>
+            <div class="strat-site-label">${site.name.split(" ")[0]}..</div>
+          </div>
+        `,
+        iconSize: [24, 38],
+        iconAnchor: [12, 19]
+      });
+    }
+
+    function initStrategicSites() {
+      strategicSitesData.forEach(site => {
+        const icon = createStratIcon(site);
+        const marker = L.marker([site.lat, site.lng], { icon }).addTo(map);
+
+        let typeLabel = "⚛️ سایت و تاسیسات هسته‌ای";
+        if (site.type === "airbase") typeLabel = "🛫 پایگاه هوایی استراتژیک";
+        else if (site.type === "energy") typeLabel = "🛢️ پایانه کلیدی انرژی و بندر";
+
+        marker.bindPopup(`
+          <div class="popup-title">${site.name}</div>
+          <div class="popup-body">
+            <b>رده تاسیسات:</b> ${typeLabel}<br>
+            <b>موقعیت:</b> ${site.lat.toFixed(2)}° N , ${site.lng.toFixed(2)}° E<br>
+            <b>اهمیت استراتژیک:</b> ${site.desc}
+          </div>
+          <div class="popup-source-box">
+            <span>شناسایی: <b>هدف اولویت ۱</b></span>
+            <span>وضعیت: <b>حفاظت پدافندی فعال</b></span>
+          </div>
+        `);
+
+        marker.on("click", () => SFX.ping());
+        stratMarkers.push(marker);
+      });
+    }
+
+    // ==========================================
+    // MODULE 3: BALLISTIC MISSILE RANGE CALCULATOR
+    // ==========================================
+    let ballisticTrajectoryLayer = null;
+    let ballisticClickCount = 0;
+    let customLaunchCoord = null;
+    let customTargetCoord = null;
+
+    const launchPresets = {
+      kermanshah: { name: "کرمانشاه (غرب ایران)", lat: 34.32, lng: 47.07 },
+      tabriz: { name: "تبریز (شمال‌غرب ایران)", lat: 38.08, lng: 46.29 },
+      isfahan: { name: "اصفهان / کاشان (مرکز ایران)", lat: 32.75, lng: 51.86 },
+      shiraz: { name: "شیراز (جنوب ایران)", lat: 29.59, lng: 52.58 },
+      yemen: { name: "صعده / صنعا (یمن)", lat: 15.35, lng: 44.20 }
+    };
+
+    const targetPresets = {
+      nevatim: { name: "پایگاه نواتیم (نقب)", lat: 31.20, lng: 35.01 },
+      telaviv: { name: "مقر وزارت جنگ و تل‌آویو", lat: 32.07, lng: 34.79 },
+      ramatdavid: { name: "پایگاه هوایی رمات دیوید", lat: 32.66, lng: 35.18 },
+      dimona: { name: "مجتمع هسته‌ای دیمونا", lat: 31.00, lng: 35.14 },
+      carrier: { name: "ناو هواپیمابر آبراهام لینکلن", lat: 23.85, lng: 59.80 }
+    };
+
+    function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function formatFlightTime(minutesFloat) {
+      if (minutesFloat < 60) {
+        const m = Math.floor(minutesFloat);
+        const s = Math.round((minutesFloat - m) * 60);
+        return `~ ${m} دقیقه و ${s} ثانیه`;
+      } else {
+        const h = Math.floor(minutesFloat / 60);
+        const m = Math.round(minutesFloat % 60);
+        return `~ ${h} ساعت و ${m} دقیقه`;
+      }
+    }
+
+    function executeBallisticCalc() {
+      const launchKey = document.getElementById("calcLaunchSelect").value;
+      const targetKey = document.getElementById("calcTargetSelect").value;
+
+      let p1 = launchPresets[launchKey] || { lat: 34.32, lng: 47.07, name: "کرمانشاه" };
+      let p2 = targetPresets[targetKey] || { lat: 31.20, lng: 35.01, name: "پایگاه نواتیم" };
+
+      if (customLaunchCoord) p1 = { lat: customLaunchCoord[0], lng: customLaunchCoord[1], name: "نقطه مبدا دستی" };
+      if (customTargetCoord) p2 = { lat: customTargetCoord[0], lng: customTargetCoord[1], name: "نقطه مقصد دستی" };
+
+      const distKm = calculateDistanceKm(p1.lat, p1.lng, p2.lat, p2.lng);
+      const distNm = distKm * 0.539957;
+
+      // Speeds:
+      // Hypersonic Fattah (Mach 8 ~ 9800 km/h)
+      const tHypersonic = (distKm / 9800) * 60;
+      // Ballistic Sejjil/Khorramshahr (Mach 6 average ~ 7350 km/h)
+      const tBallistic = (distKm / 7350) * 60;
+      // Cruise Paveh (800 km/h)
+      const tCruise = (distKm / 800) * 60;
+      // Drone Shahed-136 (185 km/h)
+      const tDrone = (distKm / 185) * 60;
+
+      // Update UI elements
+      document.getElementById("calcDistVal").innerText = `${Math.round(distKm).toLocaleString()} km (${Math.round(distNm).toLocaleString()} NM)`;
+      document.getElementById("calcHypersonicVal").innerText = formatFlightTime(tHypersonic);
+      document.getElementById("calcBallisticVal").innerText = formatFlightTime(tBallistic);
+      document.getElementById("calcCruiseVal").innerText = formatFlightTime(tCruise);
+      document.getElementById("calcDroneVal").innerText = formatFlightTime(tDrone);
+
+      // Draw curved trajectory arc on map
+      drawTrajectoryArc([p1.lat, p1.lng], [p2.lat, p2.lng]);
+      SFX.ping();
+    }
+
+    function drawTrajectoryArc(coord1, coord2) {
+      if (ballisticTrajectoryLayer) {
+        map.removeLayer(ballisticTrajectoryLayer);
+        ballisticTrajectoryLayer = null;
+      }
+
+      // Generate curved arc points (quadratic bezier simulation)
+      const points = [];
+      const steps = 30;
+      const midLat = (coord1[0] + coord2[0]) / 2 + 1.8; // curve elevation
+      const midLng = (coord1[1] + coord2[1]) / 2;
+
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const lat = (1 - t) * (1 - t) * coord1[0] + 2 * (1 - t) * t * midLat + t * t * coord2[0];
+        const lng = (1 - t) * (1 - t) * coord1[1] + 2 * (1 - t) * t * midLng + t * t * coord2[1];
+        points.push([lat, lng]);
+      }
+
+      const arcGroup = L.layerGroup();
+
+      // Glowing base line
+      const baseLine = L.polyline(points, {
+        color: "#f59e0b",
+        weight: 3.5,
+        opacity: 0.9,
+        dashArray: "8, 6"
+      });
+      arcGroup.addLayer(baseLine);
+
+      // Launch Pin
+      const p1Marker = L.circleMarker(coord1, {
+        radius: 6,
+        color: "#10b981",
+        fillColor: "#10b981",
+        fillOpacity: 1
+      });
+      arcGroup.addLayer(p1Marker);
+
+      // Target Pin
+      const p2Marker = L.circleMarker(coord2, {
+        radius: 8,
+        color: "#ef4444",
+        fillColor: "#ef4444",
+        fillOpacity: 0.9
+      });
+      arcGroup.addLayer(p2Marker);
+
+      ballisticTrajectoryLayer = arcGroup.addTo(map);
+
+      // Pan to fit trajectory
+      map.fitBounds(L.latLngBounds(points), { padding: [50, 50], maxZoom: 7 });
+    }
+
+    function clearBallisticCalc() {
+      if (ballisticTrajectoryLayer) {
+        map.removeLayer(ballisticTrajectoryLayer);
+        ballisticTrajectoryLayer = null;
+      }
+      customLaunchCoord = null;
+      customTargetCoord = null;
+      document.getElementById("calcDistVal").innerText = "---";
+      document.getElementById("calcHypersonicVal").innerText = "---";
+      document.getElementById("calcBallisticVal").innerText = "---";
+      document.getElementById("calcCruiseVal").innerText = "---";
+      document.getElementById("calcDroneVal").innerText = "---";
+    }
+
+    // ==========================================
+    // MODULE 4: RED ALERT DEFENSE SIREN MODE
+    // ==========================================
+    let isRedAlertActive = false;
+    let sirenOscillator = null;
+    let sirenGainNode = null;
+    let sirenInterval = null;
+
+    function startSirenAudio() {
+      if (!audioCtx) initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === "suspended") audioCtx.resume();
+
+      try {
+        sirenOscillator = audioCtx.createOscillator();
+        sirenGainNode = audioCtx.createGain();
+
+        sirenOscillator.type = "sawtooth";
+        sirenGainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+        sirenOscillator.connect(filter);
+        filter.connect(sirenGainNode);
+        sirenGainNode.connect(audioCtx.destination);
+
+        sirenOscillator.start();
+
+        // Modulate frequency between 460Hz and 780Hz smoothly
+        let freqUp = true;
+        sirenInterval = setInterval(() => {
+          if (!sirenOscillator || !audioCtx) return;
+          const targetFreq = freqUp ? 760 : 460;
+          sirenOscillator.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.45);
+          freqUp = !freqUp;
+        }, 900);
+      } catch (e) {
+        console.warn("Siren Audio exception:", e);
+      }
+    }
+
+    function stopSirenAudio() {
+      if (sirenInterval) {
+        clearInterval(sirenInterval);
+        sirenInterval = null;
+      }
+      if (sirenGainNode && audioCtx) {
+        try {
+          sirenGainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.15);
+        } catch (e) {}
+      }
+      setTimeout(() => {
+        if (sirenOscillator) {
+          try { sirenOscillator.stop(); sirenOscillator.disconnect(); } catch (e) {}
+          sirenOscillator = null;
+        }
+      }, 200);
+    }
+
+    function toggleRedAlert() {
+      isRedAlertActive = !isRedAlertActive;
+      document.body.classList.toggle("red-alert-active", isRedAlertActive);
+      const btn = document.getElementById("toggleRedAlertBtn");
+      btn.classList.toggle("active", isRedAlertActive);
+
+      const threatBadge = document.querySelector(".defcon-pill");
+      if (isRedAlertActive) {
+        startSirenAudio();
+        threatBadge.style.background = "#ef4444";
+        threatBadge.style.color = "#000";
+        threatBadge.style.borderColor = "#fff";
+        threatBadge.innerHTML = "<span>🚨</span><span>هشدار قرمز: آماده‌باش سطح ۱ (جنگی)</span>";
+      } else {
+        stopSirenAudio();
+        threatBadge.style.background = "rgba(249, 115, 22, 0.15)";
+        threatBadge.style.color = "#f97316";
+        threatBadge.style.borderColor = "rgba(249, 115, 22, 0.4)";
+        threatBadge.innerHTML = "<span>⚠️</span><span>آماده‌باش سطح ۲ (نارنجی)</span>";
+      }
+    }
+
+    // ==========================================
+    // MODULE 5: THREAT ANALYTICS DRAWER
+    // ==========================================
+    function openThreatAnalytics() {
+      const modal = document.getElementById("analyticsModal");
+      modal.classList.add("open");
+      SFX.ping();
+    }
+
+    function closeThreatAnalytics() {
+      const modal = document.getElementById("analyticsModal");
+      modal.classList.remove("open");
+    }
+
     // --- INIT APP ---
     document.addEventListener("DOMContentLoaded", () => {
       initMap();
@@ -2668,6 +3655,80 @@ https://c.q6v.ir/osint`;
           SFX.ping();
         });
       };
+
+      // Module 1: Naval Fleet Layer
+      initNavalFleet();
+      const toggleNavalBtn = document.getElementById("toggleNavalFleetBtn");
+      if (toggleNavalBtn) {
+        toggleNavalBtn.onclick = function() {
+          showNavalFleet = !showNavalFleet;
+          this.classList.toggle("active", showNavalFleet);
+          navalMarkers.forEach(({ marker }) => {
+            if (showNavalFleet) marker.addTo(map);
+            else map.removeLayer(marker);
+          });
+          SFX.ping();
+        };
+      }
+
+      // Module 2: Strategic Sites Layer
+      initStrategicSites();
+      const toggleStratBtn = document.getElementById("toggleStrategicSitesBtn");
+      if (toggleStratBtn) {
+        toggleStratBtn.onclick = function() {
+          showStrategicSites = !showStrategicSites;
+          this.classList.toggle("active", showStrategicSites);
+          stratMarkers.forEach(marker => {
+            if (showStrategicSites) marker.addTo(map);
+            else map.removeLayer(marker);
+          });
+          SFX.ping();
+        };
+      }
+
+      // Module 3: Ballistic Calculator
+      const toggleBallisticBtn = document.getElementById("toggleBallisticCalcBtn");
+      if (toggleBallisticBtn) {
+        toggleBallisticBtn.onclick = function() {
+          const dock = document.getElementById("ballisticDock");
+          const isOpen = dock.classList.toggle("open");
+          this.classList.toggle("active", isOpen);
+          if (isOpen) executeBallisticCalc();
+          SFX.ping();
+        };
+      }
+      const closeBallisticBtn = document.getElementById("closeBallisticDockBtn");
+      if (closeBallisticBtn) {
+        closeBallisticBtn.onclick = function() {
+          document.getElementById("ballisticDock").classList.remove("open");
+          if (toggleBallisticBtn) toggleBallisticBtn.classList.remove("active");
+        };
+      }
+      const execCalcBtn = document.getElementById("executeCalcBtn");
+      if (execCalcBtn) execCalcBtn.onclick = executeBallisticCalc;
+      const clearCalcBtnElem = document.getElementById("clearCalcBtn");
+      if (clearCalcBtnElem) clearCalcBtnElem.onclick = clearBallisticCalc;
+      const calcLaunchSel = document.getElementById("calcLaunchSelect");
+      if (calcLaunchSel) calcLaunchSel.onchange = executeBallisticCalc;
+      const calcTargetSel = document.getElementById("calcTargetSelect");
+      if (calcTargetSel) calcTargetSel.onchange = executeBallisticCalc;
+
+      // Module 4: Red Alert Siren
+      const toggleRedAlertBtnElem = document.getElementById("toggleRedAlertBtn");
+      if (toggleRedAlertBtnElem) toggleRedAlertBtnElem.onclick = toggleRedAlert;
+
+      // Module 5: Threat Analytics
+      const toggleAnalyticsBtnElem = document.getElementById("toggleAnalyticsBtn");
+      if (toggleAnalyticsBtnElem) toggleAnalyticsBtnElem.onclick = openThreatAnalytics;
+      const closeAnalyticsBtn = document.getElementById("closeAnalyticsModalBtn");
+      if (closeAnalyticsBtn) closeAnalyticsBtn.onclick = closeThreatAnalytics;
+      const analyticsModalElem = document.getElementById("analyticsModal");
+      if (analyticsModalElem) {
+        analyticsModalElem.onclick = function(e) {
+          if (e.target === this) closeThreatAnalytics();
+        };
+      }
+
     });
   </script>
 </body>
