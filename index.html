@@ -1544,6 +1544,560 @@
       margin-top: 2px;
     }
 
+
+    /* --- ENHANCED 2-ROW COMMAND HEADER --- */
+    .command-header {
+      background: linear-gradient(180deg, #0d131f 0%, #0a0d14 100%);
+      border-bottom: 1px solid var(--bg-surface-border);
+      padding: 6px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 1000;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .header-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-top: 5px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      width: 100%;
+    }
+    .header-actions::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* --- DESKTOP VIEWPORT (> 900px) --- */
+    @media (min-width: 901px) {
+      .main-workspace {
+        display: flex;
+        flex: 1;
+        height: calc(100vh - 104px);
+        position: relative;
+        overflow: hidden;
+      }
+      .osint-sidebar {
+        width: 360px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      #mapContainer {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        position: relative;
+        z-index: 10;
+        background: #080c14;
+      }
+      .mobile-view-tabs {
+        display: none !important;
+      }
+      .pulse-hud-bar {
+        position: absolute;
+        top: 50px;
+        right: 14px;
+        left: 14px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        z-index: 440;
+        pointer-events: auto;
+      }
+    }
+
+    /* --- MOBILE VIEWPORT (<= 900px) --- */
+    @media (max-width: 900px) {
+      .command-header {
+        padding: 5px 10px;
+        gap: 4px;
+      }
+      .header-main-row {
+        gap: 6px;
+      }
+      .hud-clocks {
+        display: none !important;
+      }
+      .brand-sub-badge {
+        display: none !important;
+      }
+      .brand-main-title span {
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .radar-icon-box {
+        width: 28px;
+        height: 28px;
+      }
+      .defcon-pill {
+        font-size: 9.5px;
+        padding: 2px 7px;
+        border-radius: 6px;
+      }
+      .header-actions {
+        padding: 3px 0;
+        gap: 5px;
+      }
+      .hud-btn {
+        padding: 4px 8px;
+        font-size: 10.5px;
+        flex-shrink: 0;
+        border-radius: 6px;
+      }
+
+      .main-workspace {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: calc(100vh - 100px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+
+      aside.osint-sidebar {
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1 !important;
+        display: none !important;
+      }
+      aside.osint-sidebar.mobile-visible {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+
+      #mapContainer {
+        width: 100% !important;
+        height: 100% !important;
+        flex: 1 !important;
+        display: block !important;
+      }
+      #mapContainer.mobile-hidden {
+        display: none !important;
+      }
+
+      /* Floating Iran Monitor Pulse Bar on Mobile: 2x2 Grid */
+      .pulse-hud-bar {
+        position: absolute;
+        top: 38px;
+        right: 8px;
+        left: 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        z-index: 550;
+        pointer-events: auto;
+      }
+      .pulse-hud-card {
+        padding: 6px 8px !important;
+        border-radius: 8px !important;
+        min-width: 0 !important;
+      }
+      .pulse-hud-top {
+        margin-bottom: 2px !important;
+      }
+      .pulse-hud-label {
+        font-size: 9px !important;
+      }
+      .pulse-hud-badge {
+        font-size: 8px !important;
+        padding: 1px 3px !important;
+      }
+      .pulse-hud-val {
+        font-size: 13px !important;
+      }
+      .pulse-hud-sub {
+        font-size: 8px !important;
+        margin-top: 1px !important;
+      }
+
+      /* Map overlays on Mobile */
+      .map-hud-overlay {
+        top: 8px !important;
+        left: 8px !important;
+        right: auto !important;
+        gap: 5px !important;
+        z-index: 520 !important;
+      }
+      .map-hud-pill, .hud-pill-iranmonitor {
+        font-size: 9.5px !important;
+        padding: 2px 7px !important;
+      }
+
+      /* Reposition Leaflet controls away from cards to bottom-left on Mobile */
+      .leaflet-top.leaflet-right,
+      .leaflet-top.leaflet-left {
+        top: auto !important;
+        bottom: 110px !important;
+        left: 10px !important;
+        right: auto !important;
+      }
+      .leaflet-control-zoom {
+        margin: 0 !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        border: 1px solid rgba(6, 182, 212, 0.4) !important;
+        background: rgba(13, 19, 31, 0.9) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+      }
+      .leaflet-control-zoom a {
+        background: rgba(13, 19, 31, 0.95) !important;
+        color: #38bdf8 !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        width: 28px !important;
+        height: 28px !important;
+        line-height: 28px !important;
+      }
+
+      /* Map quick layer toggles on Mobile */
+      .map-quick-toggles {
+        position: absolute !important;
+        bottom: 64px !important;
+        left: 8px !important;
+        right: 8px !important;
+        width: auto !important;
+        max-width: calc(100% - 16px) !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        gap: 5px !important;
+        padding: 5px 8px !important;
+        border-radius: 20px !important;
+        background: rgba(13, 19, 31, 0.94) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(6, 182, 212, 0.3) !important;
+        z-index: 600 !important;
+        justify-content: flex-start !important;
+      }
+      .map-quick-toggles::-webkit-scrollbar {
+        display: none !important;
+      }
+      .toggle-chip {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+        font-size: 10px !important;
+        padding: 4px 8px !important;
+        line-height: 1.2 !important;
+      }
+
+      /* Ticker styling on Mobile */
+      .live-wire-bar {
+        height: 26px !important;
+        padding: 0 8px !important;
+      }
+      .live-wire-source {
+        font-size: 9px !important;
+        padding: 1px 5px !important;
+        margin-left: 6px !important;
+      }
+      .live-wire-text {
+        font-size: 10px !important;
+      }
+
+      /* Bottom Mobile Tab Bar */
+      .mobile-view-tabs {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 12px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        background: rgba(13, 19, 31, 0.96) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(6, 182, 212, 0.6) !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(6, 182, 212, 0.3) !important;
+        border-radius: 25px !important;
+        padding: 4px 6px !important;
+        z-index: 2000 !important;
+        gap: 6px !important;
+      }
+      .mobile-tab-btn {
+        background: none !important;
+        border: none !important;
+        color: #94a3b8 !important;
+        padding: 6px 14px !important;
+        border-radius: 18px !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+      }
+      .mobile-tab-btn.active {
+        background: var(--accent-cyan, #06b6d4) !important;
+        color: #000 !important;
+        font-weight: 800 !important;
+      }
+
+      /* Sidebar feed padding on Mobile */
+      .events-feed-list {
+        padding-bottom: 90px !important;
+      }
+    }
+
+    /* --- IRAN MONITOR CARD STYLING (COMMON) --- */
+    .pulse-hud-card {
+      background: rgba(11, 15, 25, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(6, 182, 212, 0.22);
+      border-radius: 8px;
+      padding: 8px 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .pulse-hud-card:hover {
+      border-color: rgba(6, 182, 212, 0.45);
+      background: rgba(14, 20, 34, 0.95);
+    }
+    .pulse-hud-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6);
+      opacity: 0.8;
+    }
+    .pulse-card-crude::before {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+    }
+    .pulse-card-net::before {
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+    }
+    .pulse-card-x::before {
+      background: linear-gradient(90deg, #a855f7, #ec4899);
+    }
+    .pulse-hud-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .pulse-hud-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pulse-hud-badge {
+      font-size: 9.5px;
+      font-family: var(--font-mono, monospace);
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      letter-spacing: 0.2px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .badge-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .pulse-hud-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: normal;
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .pulse-hud-num {
+      font-family: var(--font-mono, monospace);
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+    .pulse-hud-sub {
+      font-size: 10px;
+      color: #64748b;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .hud-pill-iranmonitor {
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: #a5f3fc;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .hud-pill-iranmonitor:hover {
+      background: rgba(6, 182, 212, 0.3);
+      border-color: #06b6d4;
+    }
+
+    /* Modal styling for Daily Briefing & Live TV */
+    .briefing-modal-card {
+      background: #090d16;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(168, 85, 247, 0.15);
+      position: relative;
+    }
+    @media (max-width: 640px) {
+      .briefing-modal-card {
+        padding: 14px !important;
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+      }
+    }
+    .briefing-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+    }
+    .briefing-threat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      border-radius: 6px;
+      color: #fbbf24;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .briefing-summary-text {
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.03);
+      border-right: 3px solid #a855f7;
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 20px;
+    }
+    .briefing-takeaways-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .briefing-takeaway-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    /* Live TV Modal */
+    .livetv-modal-card {
+      background: #080c14;
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 820px;
+      padding: 20px;
+      box-shadow: 0 10px 45px rgba(0, 0, 0, 0.85), 0 0 30px rgba(6, 182, 212, 0.2);
+    }
+    @media (max-width: 640px) {
+      .livetv-modal-card {
+        padding: 12px !important;
+        max-width: 95vw !important;
+      }
+    }
+    .livetv-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .livetv-pills {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+    }
+    .livetv-channel-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      color: #94a3b8;
+      padding: 6px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .livetv-channel-btn.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: #06b6d4;
+      color: #38bdf8;
+    }
+    .livetv-iframe-wrap {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      height: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .livetv-iframe-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
 </style>
 </head>
 <body>
@@ -1598,6 +2152,16 @@
 
     <!-- ACTIONS / TOOLS RIBBON -->
     <div class="header-actions">
+      <!-- IRAN MONITOR INTEGRATION BUTTONS -->
+      <button class="hud-btn" id="togglePulseRibbonBtn" title="تغییر وضعیت نوار نبض ژئوپلیتیک و بازارهای Iran Monitor" style="border-color: rgba(6, 182, 212, 0.5); background: rgba(6, 182, 212, 0.12); color: #38bdf8;">
+        <span>📊</span><span class="btn-label"> نبض بحران</span>
+      </button>
+      <button class="hud-btn" id="openDailyBriefingBtn" title="بولتن راهبردی و خلاصه هوشمند وضعیت روزانه" style="border-color: rgba(168, 85, 247, 0.5); background: rgba(168, 85, 247, 0.12); color: #c084fc;">
+        <span>🧠</span><span class="btn-label"> بولتن AI</span>
+      </button>
+      <button class="hud-btn" id="openLiveTvBtn" title="پخش زنده شبکه‌های خبری ماهواره‌ای و جنگی" style="border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.12); color: #f87171;">
+        <span>📺</span><span class="btn-label"> زنده TV</span>
+      </button>
       <button class="hud-btn hud-btn-primary" id="openAddModalBtn">
         <span>➕</span><span class="btn-label"> ثبت رویداد</span>
       </button>
@@ -1644,8 +2208,8 @@
           </div>
           <div style="display:flex; align-items:center; gap:6px;">
             <span class="feed-sync-countdown" id="syncCountdown">⏳ ۶۰s</span>
-            <button class="hud-btn" id="refreshFeedBtn" style="padding: 4px 8px; font-size: 11px;">
-              <span>🔄 فچ زنده</span>
+            <button class="hud-btn" id="refreshFeedBtn" style="padding: 4px 8px; font-size: 11px;" title="استخراج و همگام‌سازی زنده با Iran Monitor">
+              <span>🔄 استخراج از Iran Monitor</span>
             </button>
           </div>
         </div>
@@ -1664,9 +2228,12 @@
           <button class="cat-pill active" data-cat="all">همه دسته‌ها</button>
           <button class="cat-pill" data-cat="missile">🚀 موشکی و پهپادی</button>
           <button class="cat-pill" data-cat="airdefense">🛡️ پدافند هوایی</button>
+          <button class="cat-pill" data-cat="combat">⚔️ درگیری‌های میدانی</button>
           <button class="cat-pill" data-cat="aviation">✈️ پروازهای رزمی</button>
-          <button class="cat-pill" data-cat="naval">⚓ عملیات دریایی</button>
+          <button class="cat-pill" data-cat="naval">⚓ عملیات دریایی و نفت</button>
+          <button class="cat-pill" data-cat="diplomacy">🌐 دیپلماسی و تحریم</button>
           <button class="cat-pill" data-cat="alert">🚨 هشدارهای قرمز</button>
+          <button class="cat-pill" data-cat="cyber">💻 سایبری و اینترنت</button>
         </div>
 
         <!-- REGION PILLS -->
@@ -1709,7 +2276,66 @@
     <!-- MAP CONTAINER -->
     <div id="mapContainer">
       <!-- HUD MAP OVERLAY -->
+      <!-- IRAN MONITOR PULSE BAR OVERLAY -->
+      <div class="pulse-hud-bar" id="iranMonitorPulseBar">
+        <!-- 1. NEWS VOLUME -->
+        <div class="pulse-hud-card">
+          <div class="pulse-hud-top">
+            <span class="pulse-hud-label">📰 اخبار جنگ</span>
+            <span class="pulse-hud-badge badge-red" id="pulseNewsTrend">+19.4%</span>
+          </div>
+          <div class="pulse-hud-val">
+            <span class="pulse-hud-num" id="pulseNewsVal">۴,۱۸۰</span>
+            <span style="font-size: 11px; color: #94a3b8; font-weight: 500;">خبر / ۲۴h</span>
+          </div>
+          <div class="pulse-hud-sub" id="pulseNewsSub">۵۴ منبع منطقه‌ای • ۷۶٪ فضای بحران</div>
+        </div>
+
+        <!-- 2. TWITTER / X CRISIS ACTIVITY -->
+        <div class="pulse-hud-card pulse-card-x">
+          <div class="pulse-hud-top">
+            <span class="pulse-hud-label">🐦 ترافیک توییتر/X</span>
+            <span class="pulse-hud-badge badge-red" id="pulseXTrend">+31.2%</span>
+          </div>
+          <div class="pulse-hud-val">
+            <span class="pulse-hud-num" id="pulseXVal">۱۸۸.۴K</span>
+            <span style="font-size: 11px; color: #94a3b8; font-weight: 500;">پست / ۲۴h</span>
+          </div>
+          <div class="pulse-hud-sub" id="pulseXSub">ترند: #Iran #Israel #Hormuz</div>
+        </div>
+
+        <!-- 3. IRAN NET CONNECTIVITY -->
+        <div class="pulse-hud-card pulse-card-net">
+          <div class="pulse-hud-top">
+            <span class="pulse-hud-label">🌐 اینترنت ایران</span>
+            <span class="pulse-hud-badge badge-green" id="pulseNetScore">98.4%</span>
+          </div>
+          <div class="pulse-hud-val" style="color: #38bdf8;">
+            <span id="pulseNetStatus" style="font-family: inherit; font-size: 14px; font-weight: 800;">پایدار و عادی</span>
+            <span style="font-size: 10px; color: #94a3b8; font-weight: 500;">(Cloudflare)</span>
+          </div>
+          <div class="pulse-hud-sub" id="pulseNetSub">شبکه ملی ۹۹.۸٪ • ترانزیت ۹۴.۵٪</div>
+        </div>
+
+        <!-- 4. CRUDE OIL & ENERGY BAROMETER -->
+        <div class="pulse-hud-card pulse-card-crude">
+          <div class="pulse-hud-top">
+            <span class="pulse-hud-label">🛢️ نفت و انرژی</span>
+            <span class="pulse-hud-badge badge-red" id="pulseOilTrend">+2.24%</span>
+          </div>
+          <div class="pulse-hud-val">
+            <span class="pulse-hud-num">$</span><span class="pulse-hud-num" id="pulseOilBrent">77.65</span>
+            <span style="font-size: 11px; color: #f59e0b; font-weight: 500;">نفت برنت</span>
+          </div>
+          <div class="pulse-hud-sub" id="pulseOilSub">WTI: $73.90 • ریسک بالای ژئوپلیتیک</div>
+        </div>
+      </div>
+
       <div class="map-hud-overlay">
+        <div class="hud-pill-iranmonitor" id="btnTogglePulseQuick">
+          <span>🇮🇷 نبض Iran Monitor</span>
+          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #06b6d4; box-shadow: 0 0 6px #06b6d4;"></span>
+        </div>
         <div class="map-hud-pill">
           <span>موقعیت مکانی رادار:</span>
           <span class="map-coords-pill" id="hudCoordsText">32.42° N , 51.68° E</span>
@@ -2496,8 +3122,11 @@
       let color = "var(--accent-red)";
       if (evt.category === "missile") { iconChar = "🚀"; color = "var(--accent-red)"; }
       else if (evt.category === "airdefense") { iconChar = "🛡️"; color = "var(--accent-cyan)"; }
+      else if (evt.category === "combat") { iconChar = "⚔️"; color = "#f97316"; }
       else if (evt.category === "aviation") { iconChar = "✈️"; color = "var(--accent-yellow)"; }
       else if (evt.category === "naval") { iconChar = "⚓"; color = "var(--accent-purple)"; }
+      else if (evt.category === "diplomacy") { iconChar = "🌐"; color = "#3b82f6"; }
+      else if (evt.category === "cyber") { iconChar = "💻"; color = "#10b981"; }
       else if (evt.category === "alert") { iconChar = "⚠️"; color = "var(--accent-orange)"; }
 
       const pulseRing = evt.isHot ? `<div class="marker-pulse-ring" style="color:${color};"></div>` : "";
@@ -2514,11 +3143,14 @@
 
     function getCatName(cat) {
       const map = {
-        missile: "🚀 حمله موشکی/پهپادی",
+        missile: "🚀 موشکی و پهپادی",
         airdefense: "🛡️ پدافند هوایی",
+        combat: "⚔️ درگیری میدانی",
         aviation: "✈️ پرواز رزمی",
-        naval: "⚓ عملیات دریایی",
-        alert: "🚨 آژیر و وضعیت قرمز"
+        naval: "⚓ عملیات دریایی و نفت",
+        alert: "🚨 آژیر و هشدار قرمز",
+        diplomacy: "🌐 دیپلماسی و تحریم",
+        cyber: "💻 سایبری و اینترنت"
       };
       return map[cat] || "رویداد میدانی";
     }
@@ -2544,7 +3176,10 @@
         return `
           <div class="event-card ${evt.severity}" id="card-${evt.id}" onclick="focusOnEvent('${evt.id}')">
             <div class="event-card-top">
-              <span class="event-cat-tag ${evt.severity}">${getCatName(evt.category)}</span>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span class="event-cat-tag ${evt.severity}">${getCatName(evt.category)}</span>
+                ${evt.origin === 'iranmonitor' ? '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); font-size:10px; padding:1px 6px; border-radius:4px; font-weight:700;">🇮🇷 Iran Monitor</span>' : ''}
+              </div>
               <span class="event-time-tag">⏱️ ${evt.time}</span>
             </div>
             <div class="event-headline">${evt.title}</div>
@@ -2559,6 +3194,11 @@
             <div class="event-card-footer">
               <span class="weapon-badge">🎯 ${evt.weapon || 'تسلیحات نامشخص'}</span>
               <div class="card-actions-right">
+                ${evt.sourceUrls && evt.sourceUrls.length > 0 ? `
+                  <a href="${evt.sourceUrls[0]}" target="_blank" rel="noopener noreferrer" class="source-link-btn" onclick="event.stopPropagation()" title="مشاهده منبع رسمی خبرگزاری / تلگرام">
+                    🔗 منبع
+                  </a>
+                ` : ''}
                 <button class="card-export-btn" title="خروجی کارت گرافیکی خبر" onclick="exportEventCard('${evt.id}', event)">
                   📸 کارت خبر
                 </button>
@@ -2567,6 +3207,10 @@
                   <span>←</span>
                 </button>
               </div>
+            </div>
+            <div style="font-size:10px; color:var(--text-dim); margin-top:6px; display:flex; justify-content:space-between; align-items:center; border-top:1px dashed var(--bg-surface-border); padding-top:4px;">
+              <span>📡 ${evt.source || 'شبکه دیده‌بان OSINT'}</span>
+              ${evt.impact ? `<span style="color:#f59e0b; font-weight:bold;">ضریب اهمیت: ${evt.impact}/۵</span>` : ''}
             </div>
           </div>
         `;
@@ -2939,7 +3583,7 @@
       ctx.fillStyle = "#06b6d4";
       ctx.font = "bold 17px Vazirmatn, sans-serif";
       ctx.textAlign = "right";
-      ctx.fillText("رصد لحظه‌ای تحولات جنگی و نظامی خاورمیانه در: c.q6v.ir/osint", w - 70, 615);
+      ctx.fillText("رصد لحظه‌ای تحولات جنگی و نظامی خاورمیانه | Middle East OSINT Radar", w - 70, 615);
 
       ctx.fillStyle = "#64748b";
       ctx.font = "14px monospace";
@@ -3599,12 +4243,20 @@
         if (soundEnabled) SFX.ping();
       };
 
-      // Refresh button
-      document.getElementById("refreshFeedBtn").onclick = () => {
+      // Refresh button (Sync with Iran Monitor)
+      document.getElementById("refreshFeedBtn").onclick = async () => {
         SFX.ping();
+        const btn = document.getElementById("refreshFeedBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<span>⏳ در حال استخراج...</span>`;
+        try {
+          await fetch("/osint/api/sync_iranmonitor");
+        } catch (e) {}
         syncCountdownSec = 60;
-        syncEventsFromBackend();
-        fetchLiveWire();
+        await syncEventsFromBackend();
+        await fetchLiveWire();
+        btn.disabled = false;
+        btn.innerHTML = `<span>🔄 استخراج از Iran Monitor</span>`;
       };
 
       // Mobile tabs
@@ -3724,7 +4376,7 @@ ${activeExportEvent.summary}
 
 📡 منبع: ${activeExportEvent.source}
 🛰️ رصد زنده تحولات خاورمیانه در:
-https://c.q6v.ir/osint`;
+${window.location.origin || ""}/osint/`;
         navigator.clipboard.writeText(text).then(() => {
           alert("✅ متن خبر و کپشن کامل با موفقیت کپی شد!");
           SFX.ping();
@@ -3805,6 +4457,261 @@ https://c.q6v.ir/osint`;
       }
 
     });
-  </script>
+  
+
+    // ==========================================
+    // IRAN MONITOR INTELLIGENCE ENGINE (CLIENT)
+    // ==========================================
+    async function fetchIranMonitorPulse() {
+      try {
+        const resp = await fetch('/osint/api/pulse');
+        if (!resp.ok) return;
+        const res = await resp.json();
+        if (!res.ok || !res.data) return;
+        
+        const data = res.data;
+        const markets = data.activity_markets;
+        const briefing = data.daily_briefing;
+
+        if (markets) {
+          if (markets.news_volume) {
+            const elVal = document.getElementById('pulseNewsVal');
+            if (elVal) elVal.textContent = markets.news_volume.articles_24h.toLocaleString('fa-IR');
+            const elTrend = document.getElementById('pulseNewsTrend');
+            if (elTrend) elTrend.textContent = markets.news_volume.change_pct;
+            const elSub = document.getElementById('pulseNewsSub');
+            if (elSub) elSub.textContent = `${markets.news_volume.tracked_sources} منبع • ${markets.news_volume.sentiment_crisis} بحران`;
+          }
+          if (markets.twitter_activity) {
+            const elVal = document.getElementById('pulseXVal');
+            if (elVal) elVal.textContent = markets.twitter_activity.mentions_24h;
+            const elTrend = document.getElementById('pulseXTrend');
+            if (elTrend) elTrend.textContent = markets.twitter_activity.change_pct;
+          }
+          if (markets.net_connectivity) {
+            const elScore = document.getElementById('pulseNetScore');
+            if (elScore) elScore.textContent = markets.net_connectivity.score;
+            const elStatus = document.getElementById('pulseNetStatus');
+            if (elStatus) elStatus.textContent = markets.net_connectivity.overall_status;
+            const elSub = document.getElementById('pulseNetSub');
+            if (elSub) elSub.textContent = `شبکه ملی ${markets.net_connectivity.nin_traffic} • ترانزیت ${markets.net_connectivity.global_transit}`;
+          }
+          if (markets.crude_oil_energy) {
+            const elBrent = document.getElementById('pulseOilBrent');
+            if (elBrent) elBrent.textContent = markets.crude_oil_energy.brent;
+            const elTrend = document.getElementById('pulseOilTrend');
+            if (elTrend) elTrend.textContent = markets.crude_oil_energy.brent_change;
+            const elSub = document.getElementById('pulseOilSub');
+            if (elSub) elSub.textContent = `WTI: $${markets.crude_oil_energy.wti} • ریسک جنگ`;
+          }
+        }
+
+        if (briefing) {
+          const elThreat = document.getElementById('briefingThreatBadge');
+          if (elThreat) elThreat.textContent = briefing.threat_level;
+          const elSummary = document.getElementById('briefingSummaryText');
+          if (elSummary) elSummary.textContent = briefing.summary;
+          const list = document.getElementById('briefingTakeawaysList');
+          if (list && briefing.key_takeaways) {
+            const icons = ['🛡️', '✈️', '🚢', '🌐'];
+            list.innerHTML = briefing.key_takeaways.map((t, idx) => `
+              <div class="briefing-takeaway-item">
+                <span style="font-size: 16px;">${icons[idx % icons.length]}</span>
+                <span>${t}</span>
+              </div>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        console.warn('Iran Monitor Pulse fetch error:', err);
+      }
+    }
+
+    function initIranMonitorModules() {
+      // Toggle Pulse Bar
+      const pulseBar = document.getElementById('iranMonitorPulseBar');
+      const togglePulseBtn = document.getElementById('togglePulseRibbonBtn');
+      const quickToggleBtn = document.getElementById('btnTogglePulseQuick');
+
+      const toggleBar = () => {
+        if (pulseBar) {
+          pulseBar.style.display = (pulseBar.style.display === 'none') ? 'grid' : 'none';
+        }
+      };
+      if (togglePulseBtn) togglePulseBtn.addEventListener('click', toggleBar);
+      if (quickToggleBtn) quickToggleBtn.addEventListener('click', toggleBar);
+
+      // Daily Briefing Modal
+      const briefingModal = document.getElementById('dailyBriefingModal');
+      const openBriefingBtn = document.getElementById('openDailyBriefingBtn');
+      const closeBriefingBtn = document.getElementById('closeDailyBriefingBtn');
+      const dismissBriefingBtn = document.getElementById('btnDismissBriefing');
+
+      const showBriefing = () => {
+        if (briefingModal) {
+          briefingModal.style.display = 'flex';
+          briefingModal.classList.add('open');
+        }
+      };
+      const hideBriefing = () => {
+        if (briefingModal) {
+          briefingModal.style.display = 'none';
+          briefingModal.classList.remove('open');
+        }
+      };
+
+      if (openBriefingBtn) openBriefingBtn.addEventListener('click', showBriefing);
+      if (closeBriefingBtn) closeBriefingBtn.addEventListener('click', hideBriefing);
+      if (dismissBriefingBtn) dismissBriefingBtn.addEventListener('click', hideBriefing);
+      if (briefingModal) {
+        briefingModal.addEventListener('click', (e) => {
+          if (e.target === briefingModal) hideBriefing();
+        });
+      }
+
+      // Live TV Modal
+      const liveTvModal = document.getElementById('liveTvModal');
+      const openLiveTvBtn = document.getElementById('openLiveTvBtn');
+      const closeLiveTvBtn = document.getElementById('closeLiveTvBtn');
+      const liveTvIframe = document.getElementById('liveTvIframe');
+      const channelBtns = document.querySelectorAll('.livetv-channel-btn');
+
+      const showLiveTv = () => {
+        if (liveTvModal) {
+          liveTvModal.style.display = 'flex';
+          liveTvModal.classList.add('open');
+          const activeBtn = document.querySelector('.livetv-channel-btn.active');
+          if (activeBtn && liveTvIframe && !liveTvIframe.src) {
+            liveTvIframe.src = activeBtn.getAttribute('data-embed');
+          }
+        }
+      };
+      const hideLiveTv = () => {
+        if (liveTvModal) {
+          liveTvModal.style.display = 'none';
+          liveTvModal.classList.remove('open');
+          if (liveTvIframe) liveTvIframe.src = '';
+        }
+      };
+
+      if (openLiveTvBtn) openLiveTvBtn.addEventListener('click', showLiveTv);
+      if (closeLiveTvBtn) closeLiveTvBtn.addEventListener('click', hideLiveTv);
+      if (liveTvModal) {
+        liveTvModal.addEventListener('click', (e) => {
+          if (e.target === liveTvModal) hideLiveTv();
+        });
+      }
+
+      channelBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          channelBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          if (liveTvIframe) {
+            liveTvIframe.src = btn.getAttribute('data-embed');
+          }
+        });
+      });
+
+      // Handle resize & mobile tab switcher map invalidation
+      window.addEventListener('resize', () => {
+        if (window.map) window.map.invalidateSize();
+      });
+
+      // Fetch pulse metrics on startup
+      fetchIranMonitorPulse();
+      setInterval(fetchIranMonitorPulse, 60000);
+    }
+
+    // Initialize Iran Monitor
+    setTimeout(initIranMonitorModules, 200);
+
+</script>
+
+  <!-- DAILY BRIEFING MODAL (IRAN MONITOR AI) -->
+  <div class="analytics-modal-backdrop" id="dailyBriefingModal" style="display: none;">
+    <div class="briefing-modal-card">
+      <div class="briefing-head">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 22px;">🧠</span>
+          <div>
+            <div style="font-size: 16px; font-weight: 800; color: #fff;">بولتن راهبردی و ارزیابی ریسک بحران</div>
+            <div style="font-size: 11px; color: #a855f7;">Iran Monitor AI Strategic Crisis Briefing</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="briefing-threat-pill" id="briefingThreatBadge">⚠️ DEFCON 2 / سطح هوشیاری بالا</div>
+          <button class="calc-close-btn" id="closeDailyBriefingBtn" style="font-size: 20px; color: #94a3b8; cursor: pointer;">✕</button>
+        </div>
+      </div>
+
+      <div class="briefing-summary-text" id="briefingSummaryText">
+        تشدید آمادگی عملیاتی یگان‌های پدافندی ارتش و سپاه در مرکز و غرب کشور در واکنش به پروازهای فشرده شناسایی و سوخت‌رسانی ائتلاف در مرزهای شرقی سوریه و عراق. تردد تانکرهای انرژی در تنگه هرمز تحت اسکورت هوایی-دریایی جریان دارد و نشانه‌هایی از تحرکات دیپلماتیک غیرمستقیم در مسقط برای مدیریت تنش مخابره شده است.
+      </div>
+
+      <div style="font-size: 12px; font-weight: 700; color: #94a3b8; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+        <span>🎯</span><span>محورهای کلیدی آرایش رزمی و رصد لحظه‌ای:</span>
+      </div>
+
+      <div class="briefing-takeaways-wrap" id="briefingTakeawaysList">
+        <div class="briefing-takeaway-item">
+          <span>🛡️</span>
+          <span>آماده‌باش سامانه‌های پدافندی باور-۳۷۳ و سوم خرداد در شعاع پایگاه‌های مرکزی و هسته‌ای</span>
+        </div>
+        <div class="briefing-takeaway-item">
+          <span>✈️</span>
+          <span>افزایش گشت‌های هوایی سوخت‌رسان KC-135 و پرنده‌های بدون سرنشین در پایگاه التنف و شرق فرات</span>
+        </div>
+        <div class="briefing-takeaway-item">
+          <span>🚢</span>
+          <span>پایداری و عبور امن خطوط دریانوردی تجاری در تنگه هرمز با حضور گشت‌های ناوبری سپاه</span>
+        </div>
+        <div class="briefing-takeaway-item">
+          <span>🌐</span>
+          <span>پایش و رصد مداوم درگاه‌های اینترنت بین‌الملل و زیرساخت‌های مخابراتی جهت پیشگیری از حملات سایبری</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; color: #64748b;">
+        <span>دیده‌بان ژئوپلیتیک: سنتز ۵۰+ منبع با هوش مصنوعی</span>
+        <button class="hud-btn" id="btnDismissBriefing" style="padding: 4px 14px; font-size: 11px; border-color: rgba(168, 85, 247, 0.4);">بستن بولتن</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE TV BROADCAST MODAL -->
+  <div class="analytics-modal-backdrop" id="liveTvModal" style="display: none;">
+    <div class="livetv-modal-card">
+      <div class="livetv-head">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">📺</span>
+          <div>
+            <div style="font-size: 15px; font-weight: 800; color: #fff;">مانیتورینگ زنده شبکه‌های خبری بین‌المللی</div>
+            <div style="font-size: 11px; color: #06b6d4;">Satellite War News Monitoring • Live Broadcast</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 700;">● پخش زنده</span>
+          <button class="calc-close-btn" id="closeLiveTvBtn" style="font-size: 20px; color: #94a3b8; cursor: pointer;">✕</button>
+        </div>
+      </div>
+
+      <div class="livetv-pills">
+        <button class="livetv-channel-btn active" data-embed="https://www.youtube-nocookie.com/embed/gCNeDWCI0vo?autoplay=1">
+          <span>📡</span><span>الجزیره انگلیسی (Al Jazeera)</span>
+        </button>
+        <button class="livetv-channel-btn" data-embed="https://www.youtube-nocookie.com/embed/9Auq9mYxFEE?autoplay=1">
+          <span>⚡</span><span>رویترز / اسکای نیوز (Sky News)</span>
+        </button>
+        <button class="livetv-channel-btn" data-embed="https://www.youtube-nocookie.com/embed/h3MuIUNCCzI?autoplay=1">
+          <span>🌐</span><span>فرانس ۲۴ انگلیسی (France 24)</span>
+        </button>
+      </div>
+
+      <div class="livetv-iframe-wrap">
+        <iframe id="liveTvIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
